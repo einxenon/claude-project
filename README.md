@@ -2,16 +2,18 @@
 
 A one-page marketing site for **Horizon Wealth Planning**, a fictional financial planning firm offering retirement, investment and insurance planning. The whole site is a single self-contained `index.html` with no frameworks and no build step.
 
-**Live site (v2):** https://einxenon.github.io/claude-project/v2/
+**Live site (v3):** https://einxenon.github.io/claude-project/v3/
 
-**Original site (v1):** https://einxenon.github.io/claude-project/
+**Earlier versions:** [v2](https://einxenon.github.io/claude-project/v2/) (dark navy design) and [v1](https://einxenon.github.io/claude-project/) (the original)
 
 ![Screenshot of the Horizon Wealth Planning home page](docs/screenshot.png)
 
 ## What is on the page
 
+This describes v3, a bright, family-themed design in cream, coral, yellow, teal and indigo.
+
 - **Navigation** that is transparent over the hero and solid once you scroll, with a reading-progress bar, a highlight for the section in view, and links to Services, Calculator, Reviews and Contact
-- **Hero** with the headline "Plan Today. Prosper Tomorrow.", a featured client quote, the overall rating, and three statistics that count up when they scroll into view
+- **Hero** with the headline "Plan Today. Prosper Tomorrow.", an inline SVG illustration of a family outside their home, a featured client quote, the overall rating, and three statistics that count up when they scroll into view
 - **Trust marquee**, a looping strip of how the firm works (fee-only, no commissions, fees in writing), which pauses on hover
 - **Services slider** with five cards. It scrolls by touch, trackpad, mouse drag, arrow buttons or arrow keys, shows a position counter and progress bar, and each card's link preselects that service in the enquiry form
 - **Retirement calculator** with five range sliders (age, retirement age, savings, monthly contribution, assumed return). It shows a projected balance, a growth chart and the split between contributions and growth, all computed in the browser
@@ -24,7 +26,7 @@ The page is mobile-first with breakpoints at 768px and 1024px. It respects `pref
 
 ## Security
 
-- The deployed v2 page carries a strict Content-Security-Policy: everything is blocked by default, the page's own inline `<style>` and `<script>` are allowed by SHA-256 hash, and the only other origins allowed are Google Fonts. Form posts, `<base>` tags and plugins are blocked, and Trusted Types are required, so `innerHTML`-style DOM injection throws instead of running.
+- The deployed v2 and v3 pages carry a strict Content-Security-Policy: everything is blocked by default, the page's own inline `<style>` and `<script>` are allowed by SHA-256 hash, and the only other origins allowed are Google Fonts. Form posts, `<base>` tags and plugins are blocked, and Trusted Types are required, so `innerHTML`-style DOM injection throws instead of running.
 - The page loads no third-party scripts or images. Icons, hero art and avatars are inline SVG and CSS.
 - User input is only written to the page as text, is length-limited and stripped of control characters, and is never logged to the console. The enquiry form has a honeypot field for bots and ignores double submits.
 - The deploy workflow pins every GitHub Action to a commit SHA, checks out without persisting credentials, and Dependabot proposes updates to those pins.
@@ -45,8 +47,8 @@ There is nothing to install, build, lint or test. The local file has no Content-
 
 | Path | Purpose |
 | --- | --- |
-| `index.html` | The whole site (v2): markup, one `<style>` tag and one `<script>` tag |
-| `.github/workflows/pages.yml` | Deploys v1 and v2 to GitHub Pages |
+| `index.html` | The whole site (v3): markup, one `<style>` tag and one `<script>` tag |
+| `.github/workflows/pages.yml` | Deploys v1, v2 and v3 to GitHub Pages |
 | `.github/dependabot.yml` | Keeps the pinned GitHub Actions up to date |
 | `docs/screenshot.png` | Screenshot of the live site shown in this README, refreshed by `/publish` |
 | `.claude/commands/publish.md` | Claude Code `/publish` command that scans, pushes, deploys and screenshots this repo |
@@ -57,10 +59,12 @@ Keeping everything in one file is a hard constraint. The only external resource 
 
 ## Deployment
 
-Every push to `main` runs the **Deploy to GitHub Pages** workflow, which can also be started manually from the Actions tab. It publishes two pages:
+Every push to `main` runs the **Deploy to GitHub Pages** workflow, which can also be started manually from the Actions tab. It publishes three pages:
 
-- `/` is v1, taken from git history at a fixed commit, so it stays exactly as it was.
-- `/v2/` is the current `index.html`, with the Content-Security-Policy tag added. The workflow computes the style and script hashes from the file it is deploying.
+- `/` is v1 and `/v2/` is v2, each taken from git history at a fixed commit, so they stay exactly as they were.
+- `/v3/` is the current `index.html`.
+
+v2 and v3 get the Content-Security-Policy tag added on the way out. The workflow computes the style and script hashes from the file it is deploying.
 
 The README, `CLAUDE.md`, the `docs` folder and the `.claude` folder are not part of the deployed site.
 

@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A one-page marketing site for "Horizon Wealth Planning", delivered as a single self-contained `index.html`. CSS lives in one `<style>` tag and JS in one `<script>` tag. This is a hard constraint: no frameworks, no build tools, no extra files. The only external resource is Google Fonts (Fraunces, Instrument Sans). There are no third-party images: the hero art, icons and avatars are inline SVG and CSS.
 
-`index.html` on `main` is version 2 of the site. Version 1 is not a file in the working tree; it is the `index.html` at commit `6675e85`, which the deploy workflow republishes unchanged.
+`index.html` on `main` is version 3 of the site (the bright, family-themed design). Versions 1 and 2 are not files in the working tree; they are the `index.html` at commits `6675e85` and `650729e`, which the deploy workflow republishes unchanged.
 
 ## Commands
 
@@ -18,10 +18,13 @@ Start-Process "index.html"
 
 ## Deployment
 
-`.github/workflows/pages.yml` runs on every push to `main` and publishes two pages to GitHub Pages:
+`.github/workflows/pages.yml` runs on every push to `main` and publishes three pages to GitHub Pages:
 
-- `/` is v1, read from git with `git show $V1_COMMIT:index.html`. Do not change `V1_COMMIT` unless the user asks to replace v1.
-- `/v2/` is the current `index.html` with a Content-Security-Policy `<meta>` tag injected (see Security).
+- `/` is v1, read from git with `git show $V1_COMMIT:index.html`.
+- `/v2/` is v2 (the dark navy design), read the same way from `V2_COMMIT`, with a Content-Security-Policy `<meta>` tag injected.
+- `/v3/` is the current `index.html` with the same Content-Security-Policy injection (see Security).
+
+Do not change `V1_COMMIT` or `V2_COMMIT` unless the user asks to replace that version. To keep the current page and start a new version, add a `V3_COMMIT` pinned to the last commit of v3 and publish the working file at the next path.
 
 ## Verifying changes in the Browser pane
 
@@ -36,7 +39,9 @@ Start-Process "index.html"
 The CSS, HTML and JS are each divided by comment banners into matching sections (nav, hero, trust marquee, sliders, services rail, retirement calculator, reviews, enquiry form, footer, back-to-top). Keep that banner structure when adding code.
 
 **CSS**
-- All colours, spacing, radius, shadow, easing and nav height are custom properties on `:root`. Use the tokens rather than literal values.
+- All colours, spacing, radius, shadow, easing and nav height are custom properties on `:root`. Use the tokens rather than literal values. `--ink` is the dark colour for text and dark bands; each accent (coral, sun, teal, sky, grape) has a `-soft` tint and a `-deep` shade that is dark enough for text on the cream background.
+- The hero illustration is inline SVG coloured through the `.f-*` (fill) and `.s-*` (stroke) classes, so it follows the tokens.
+- Service cards and review avatars pick their accent with `:nth-child` on `.slider-slide`.
 - Mobile-first with exactly two breakpoints: `min-width: 768px` and `min-width: 1024px`.
 - `.fade-in` only hides content under the `.js` class, which the script adds to `<html>`, so the page stays readable without JS. `data-delay="1"` to `"4"` staggers a reveal.
 - `.js-only` hides things that cannot work without JS (the calculator, slider controls).

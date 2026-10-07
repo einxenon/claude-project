@@ -18,6 +18,8 @@ concurrency:
 env:
   # The commit whose index.html is the original (v1) site. It stays published at the site root.
   V1_COMMIT: 6675e8570ad79aebf244f2bafafe72a4dfc909b1
+  # The commit whose index.html is the v2 site. It stays published at /v2/.
+  V2_COMMIT: 650729e9e241726212757e995e6ee5bb86f8682a
 
 jobs:
   deploy:
@@ -38,18 +40,17 @@ jobs:
 
       # Publish only the site itself, not README.md or CLAUDE.md:
       #   /      the v1 page, exactly as it was at V1_COMMIT
-      #   /v2/   the current index.html, with a Content-Security-Policy added
+      #   /v2/   the v2 page from V2_COMMIT, with a Content-Security-Policy added
+      #   /v3/   the current index.html, with a Content-Security-Policy added
       - name: Stage site files
-        env:
-          SRC: index.html
-          OUT: _site/v2/index.html
         run: |
-          mkdir -p _site/v2
+          mkdir -p _site/v2 _site/v3
           git show "$V1_COMMIT:index.html" > _site/index.html
+          git show "$V2_COMMIT:index.html" > "$RUNNER_TEMP/v2.html"
 
           # The CSP allows the one inline <style> and <script> by hash, so the hashes are
           # computed here from the file being deployed and can never go stale.
-          node <<'EOF'
+          cat > "$RUNNER_TEMP/add-csp.js" <<'EOF'
           const fs = require("fs");
           const crypto = require("crypto");
           const marker = /<!-- CSP:[^>]*-->/;
@@ -75,8 +76,11 @@ jobs:
 
           if (!marker.test(html)) throw new Error("CSP marker comment not found in " + process.env.SRC);
           fs.writeFileSync(process.env.OUT, html.replace(marker, '<meta http-equiv="Content-Security-Policy" content="' + csp + '">'));
-          console.log(csp);
+          console.log(process.env.OUT + ": " + csp);
           EOF
+
+          SRC="$RUNNER_TEMP/v2.html" OUT=_site/v2/index.html node "$RUNNER_TEMP/add-csp.js"
+          SRC=index.html OUT=_site/v3/index.html node "$RUNNER_TEMP/add-csp.js"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0

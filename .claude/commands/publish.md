@@ -45,7 +45,7 @@ Report the result as a short table: file, line, what was found, severity.
 Read the existing `README.md` first and keep anything the user wrote by hand. It should cover:
 
 - Project name and a one-paragraph description
-- Live site links: v2, the current `index.html`, at `https://OWNER.github.io/REPO/v2/`, and v1 at `https://OWNER.github.io/REPO/` (confirm the real base URL in step 5 and correct it if it differs)
+- Live site links: the current `index.html` at its version path (`https://OWNER.github.io/REPO/v3/` at the time of writing; the workflow's "Stage site files" step is the source of truth), and the earlier versions at `/v2/` and `/` (confirm the real base URL in step 5 and correct it if it differs)
 - The screenshot image line, if `docs/screenshot.png` already exists (step 6 adds it on a first publish and refreshes the image)
 - What is in the page (sections and features), taken from the actual `index.html`
 - How to run it locally
@@ -59,7 +59,7 @@ Base every statement on the files in the repo. Do not invent features, licences 
 
 Check `.github/workflows/pages.yml`.
 
-- If it exists, verify it is still correct: triggers on pushes to the published branch plus `workflow_dispatch`, has `pages: write` and `id-token: write` permissions, and stages only the site files, not `README.md`, `CLAUDE.md` or `.claude/`: the v1 page from `V1_COMMIT` at the site root, and the current `index.html` at `v2/` with the Content-Security-Policy injected. Never change `V1_COMMIT` or publish the current `index.html` at the root unless the user asks to replace v1. Edit only what is wrong.
+- If it exists, verify it is still correct: triggers on pushes to the published branch plus `workflow_dispatch`, has `pages: write` and `id-token: write` permissions, and stages only the site files, not `README.md`, `CLAUDE.md` or `.claude/`: each earlier version from its pinned commit (`V1_COMMIT` at the site root, `V2_COMMIT` at `v2/`), and the current `index.html` at the newest version path, with the Content-Security-Policy injected into every version except v1. Never change a pinned commit or publish the current `index.html` over an earlier version unless the user asks to replace that version. If the user asks for a new version that must not overwrite the current one, pin the current one to its last commit and add the next path. Edit only what is wrong.
 - If it is missing, create it using `actions/checkout`, `actions/configure-pages`, `actions/upload-pages-artifact` and `actions/deploy-pages`.
 
 Then make sure Pages is set to build from GitHub Actions:
@@ -89,7 +89,7 @@ If that returns 404, enable it with `gh api -X POST repos/OWNER/REPO/pages -f bu
 Use the Playwright MCP tools (the `playwright` server in `.mcp.json`). Take the screenshot from the live URL confirmed in step 5, after the deployment has succeeded, so it shows what is actually published. The Playwright server blocks `file:` URLs, so the local `index.html` cannot be used.
 
 1. `browser_resize` to 1280 x 800.
-2. `browser_navigate` to the v2 URL (the Pages URL followed by `v2/`).
+2. `browser_navigate` to the URL of the newest version (the Pages URL followed by its path, for example `v3/`).
 3. `browser_take_screenshot` with `filename: docs/screenshot.png` (viewport only, not `fullPage`: content below the fold is hidden until it scrolls into view).
 4. Read `docs/screenshot.png` and check it: the fonts have loaded and the hero statistics show their final values (15+, 1,200+, $500M) rather than a mid-count number. Also check `browser_console_messages` for Content-Security-Policy errors, which mean the deployed page is broken. If not, take it again.
 5. `browser_close`.
@@ -112,7 +112,7 @@ Read the current values first so nothing useful is overwritten:
 gh repo view OWNER/REPO --json description,homepageUrl,repositoryTopics
 ```
 
-Then set the description (one sentence, under 350 characters), the website (the v2 URL) and a few accurate topics:
+Then set the description (one sentence, under 350 characters), the website (the URL of the newest version) and a few accurate topics:
 
 ```bash
 gh repo edit OWNER/REPO --description "<description>" --homepage "<pages url>" --add-topic <topic>
