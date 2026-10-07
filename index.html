@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Horizon Wealth Planning offers personalised retirement, investment and insurance planning to help you plan today and prosper tomorrow.">
+  <title>Horizon Wealth Planning | Plan Today. Prosper Tomorrow.</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================
+       1. DESIGN TOKENS (custom properties)
+       ========================================================== */
+    :root {
+      /* Colours */
+      --navy: #0B2545;
+      --navy-dark: #071A33;
+      --navy-light: #13315C;
+      --gold: #C9A227;
+      --gold-dark: #A9871B;
+      --bg: #F7F9FC;
+      --white: #FFFFFF;
+      --text: #1F2A3D;
+      --text-muted: #5B6779;
+      --text-on-navy: #D6DEEA;
+      --border: #D9E0EA;
+      --error: #C0392B;
+      --success: #1E7E4A;
+
+      /* Spacing scale */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --space-7: 3rem;
+      --space-8: 5rem;
+
+      /* Typography */
+      --font-heading: "Playfair Display", Georgia, serif;
+      --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+      /* Misc */
+      --radius: 10px;
+      --shadow: 0 6px 24px rgba(11, 37, 69, 0.08);
+      --shadow-hover: 0 12px 32px rgba(11, 37, 69, 0.16);
+      --transition: 0.25s ease;
+      --nav-h: 68px;
+      --container: 1180px;
+
+      /* Carousel: cards visible at once (overridden at 1024px) */
+      --per-view: 1;
+    }
+
+    /* ==========================================================
+       2. BASE / RESET
+       ========================================================== */
+    *,
+    *::before,
+    *::after { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: var(--nav-h);
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+      line-height: 1.2;
+      margin: 0 0 var(--space-4);
+      color: var(--navy);
+    }
+
+    p { margin: 0 0 var(--space-4); }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+
+    :focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin-inline: auto;
+      padding-inline: var(--space-5);
+    }
+
+    .section { padding-block: var(--space-8); }
+
+    .section-header {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto var(--space-7);
+    }
+
+    .section-header h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+    .section-header p { color: var(--text-muted); margin: 0; }
+
+    /* Gold underline accent below section titles */
+    .section-header h2::after {
+      content: "";
+      display: block;
+      width: 64px;
+      height: 3px;
+      margin: var(--space-4) auto 0;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      padding: 0.85rem 1.6rem;
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition),
+                  border-color var(--transition), transform var(--transition),
+                  box-shadow var(--transition);
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+    .btn-gold { background: var(--gold); color: var(--navy-dark); }
+    .btn-gold:hover { background: var(--gold-dark); color: var(--white); }
+
+    .btn-outline { border-color: var(--white); color: var(--white); background: transparent; }
+    .btn-outline:hover { background: var(--white); color: var(--navy); }
+
+    .btn[disabled] { opacity: 0.8; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* Fade-in-on-scroll (only applied when JS is available) */
+    .js .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .js .fade-in.is-visible { opacity: 1; transform: none; }
+
+    /* ==========================================================
+       3. HEADER / STICKY NAV
+       ========================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      background: var(--navy);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+    }
+
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-size: clamp(1.05rem, 4.6vw, 1.3rem);
+      font-weight: 700;
+      color: var(--white);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .logo span { color: var(--gold); }
+
+    /* Hamburger button (mobile only) */
+    .nav-toggle {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 44px;
+      height: 44px;
+      padding: 10px;
+      background: transparent;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform var(--transition), opacity var(--transition);
+    }
+
+    .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu: dropdown panel below the bar */
+    .nav-menu {
+      position: absolute;
+      top: var(--nav-h);
+      left: 0;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      padding: var(--space-3) var(--space-5) var(--space-5);
+      background: var(--navy);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-menu.is-open { display: flex; }
+
+    .nav-menu a {
+      display: block;
+      padding: var(--space-3) 0;
+      color: var(--text-on-navy);
+      font-weight: 500;
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .nav-menu a:hover { color: var(--gold); }
+
+    /* ==========================================================
+       4. HERO
+       ========================================================== */
+    .hero {
+      /* Sits underneath the sticky header so it fills the full viewport */
+      margin-top: calc(-1 * var(--nav-h));
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: calc(var(--nav-h) + var(--space-7)) 0 var(--space-7);
+      display: flex;
+      align-items: center;
+      color: var(--white);
+      text-align: center;
+      background-color: var(--navy);
+      background-image:
+        linear-gradient(135deg, rgba(11, 37, 69, 0.94) 0%, rgba(11, 37, 69, 0.78) 55%, rgba(19, 49, 92, 0.68) 100%),
+        url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80");
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.25rem, 7vw, 4.25rem);
+      color: var(--white);
+      margin-bottom: var(--space-5);
+    }
+
+    .hero h1 em { font-style: normal; color: var(--gold); }
+
+    .hero-sub {
+      max-width: 620px;
+      margin: 0 auto var(--space-6);
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      color: var(--text-on-navy);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      max-width: 320px;
+      margin: 0 auto var(--space-7);
+    }
+
+    /* Trust stats */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-5);
+      max-width: 820px;
+      margin: 0 auto;
+      padding-top: var(--space-6);
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 5vw, 2.75rem);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-on-navy);
+    }
+
+    /* ==========================================================
+       5. TESTIMONIALS CAROUSEL
+       ========================================================== */
+    .testimonials { background: var(--white); }
+
+    .carousel { position: relative; }
+
+    .carousel-viewport { overflow: hidden; }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.6s ease;
+      touch-action: pan-y;
+    }
+
+    .carousel-slide {
+      flex: 0 0 calc(100% / var(--per-view));
+      padding: var(--space-3);
+    }
+
+    .testimonial-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: var(--space-6);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--gold);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+
+    .stars { display: flex; gap: 2px; margin-bottom: var(--space-4); color: var(--gold); }
+    .stars svg { width: 20px; height: 20px; fill: currentColor; }
+
+    .testimonial-card blockquote {
+      flex: 1;
+      margin: 0 0 var(--space-5);
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .testimonial-author { display: flex; align-items: center; gap: var(--space-4); }
+
+    .testimonial-author img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      background: var(--border);
+    }
+
+    .author-name { display: block; font-weight: 600; color: var(--navy); }
+    .author-role { display: block; font-size: 0.875rem; color: var(--text-muted); }
+
+    /* Controls: arrows + dots */
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-5);
+      margin-top: var(--space-5);
+    }
+
+    .carousel-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      color: var(--navy);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+
+    .carousel-arrow:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
+    .carousel-arrow svg { width: 20px; height: 20px; }
+
+    .carousel-dots { display: flex; gap: var(--space-2); }
+
+    .carousel-dot {
+      width: 12px;
+      height: 12px;
+      padding: 0;
+      background: var(--border);
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .carousel-dot:hover { background: var(--text-muted); }
+    .carousel-dot[aria-current="true"] { background: var(--gold); transform: scale(1.25); }
+
+    /* ==========================================================
+       6. ENQUIRY / CONTACT
+       ========================================================== */
+    .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-6); }
+    .contact-grid > * { min-width: 0; } /* let columns shrink below their content width */
+
+    /* Left column: contact info */
+    .contact-info {
+      padding: var(--space-6);
+      background: var(--navy);
+      color: var(--text-on-navy);
+      border-radius: var(--radius);
+    }
+
+    .contact-info h3 { color: var(--white); font-size: 1.5rem; }
+
+    .contact-list { margin-top: var(--space-5); display: grid; gap: var(--space-5); }
+    .contact-list li { display: flex; gap: var(--space-4); align-items: flex-start; }
+    .contact-list li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+
+    .contact-icon {
+      flex: 0 0 44px;
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(201, 162, 39, 0.15);
+      border-radius: 50%;
+      color: var(--gold);
+    }
+
+    .contact-icon svg { width: 20px; height: 20px; }
+    .contact-list strong { display: block; color: var(--white); font-weight: 600; }
+    .contact-list a { text-decoration: none; transition: color var(--transition); }
+    .contact-list a:hover { color: var(--gold); }
+
+    /* Right column: form */
+    .form-card {
+      padding: var(--space-6);
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
+
+    .form-field label,
+    .form-field legend {
+      display: block;
+      margin-bottom: var(--space-2);
+      padding: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .required { color: var(--error); }
+
+    .form-field input[type="text"],
+    .form-field input[type="email"],
+    .form-field input[type="tel"],
+    .form-field select,
+    .form-field textarea,
+    .newsletter-form input {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .form-field textarea { min-height: 120px; resize: vertical; }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      outline: none;
+      border-color: var(--navy);
+      box-shadow: 0 0 0 3px rgba(11, 37, 69, 0.15);
+    }
+
+    fieldset.form-field { margin: 0; padding: 0; border: 0; min-width: 0; }
+
+    .radio-group { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); }
+
+    .radio-group label,
+    .checkbox-label {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: var(--space-2);
+      margin: 0;
+      font-weight: 400;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .radio-group input,
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+      margin: 3px 0 0;
+      flex: 0 0 auto;
+      accent-color: var(--navy);
+    }
+
+    /* Invalid state: red border + inline message */
+    .form-field .is-invalid,
+    .newsletter-form .is-invalid {
+      border-color: var(--error) !important;
+      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+    }
+
+    .radio-group.is-invalid,
+    .checkbox-label.is-invalid {
+      padding: var(--space-2);
+      border: 1.5px solid var(--error);
+      border-radius: 8px;
+    }
+
+    .field-error {
+      min-height: 0;
+      margin: var(--space-1) 0 0;
+      font-size: 0.82rem;
+      color: var(--error);
+    }
+
+    .field-error:empty { display: none; }
+
+    .btn-submit { width: 100%; }
+
+    /* Loading spinner inside the submit button */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(7, 26, 51, 0.3);
+      border-top-color: var(--navy-dark);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    .btn.is-loading .spinner { display: inline-block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success panel that replaces the form */
+    .form-success { text-align: center; padding: var(--space-7) var(--space-4); }
+    .form-success:focus { outline: none; } /* focused programmatically for screen readers only */
+
+    .form-success .success-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      margin-bottom: var(--space-5);
+      background: rgba(30, 126, 74, 0.12);
+      border-radius: 50%;
+      color: var(--success);
+    }
+
+    .form-success .success-icon svg { width: 36px; height: 36px; }
+    .form-success p { color: var(--text-muted); margin: 0; }
+
+    /* ==========================================================
+       7. FOOTER
+       ========================================================== */
+    .site-footer { background: var(--navy); color: var(--text-on-navy); }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      padding-block: var(--space-7);
+    }
+
+    .site-footer h3 {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .footer-about p { margin-top: var(--space-4); font-size: 0.95rem; }
+
+    .footer-links li { margin-bottom: var(--space-2); }
+
+    .footer-links a {
+      text-decoration: none;
+      transition: color var(--transition), padding-left var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--gold); padding-left: 4px; }
+
+    /* Newsletter */
+    .newsletter-form { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
+    .newsletter-form input { flex: 1; min-width: 0; border-color: transparent; color: var(--text); }
+    .newsletter-form .btn { padding: 0.75rem 1rem; }
+
+    .newsletter-message { margin: var(--space-2) 0 0; font-size: 0.85rem; }
+    .newsletter-message:empty { display: none; }
+    .newsletter-message.is-error { color: #FF9C8F; }
+    .newsletter-message.is-success { color: #8FE0B0; }
+
+    /* Social icons */
+    .social-links { display: flex; gap: var(--space-3); margin-top: var(--space-5); }
+
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50%;
+      transition: background var(--transition), color var(--transition),
+                  border-color var(--transition), transform var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--navy-dark);
+      transform: translateY(-3px);
+    }
+
+    .social-links svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* Bottom bar */
+    .footer-bottom {
+      padding-block: var(--space-5);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    .footer-bottom p { margin: 0; }
+    .footer-bottom .disclaimer { margin-top: var(--space-2); opacity: 0.75; }
+
+    /* ==========================================================
+       8. BACK TO TOP BUTTON
+       ========================================================== */
+    .back-to-top {
+      position: fixed;
+      right: var(--space-5);
+      bottom: var(--space-5);
+      z-index: 90;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--gold);
+      border: 0;
+      border-radius: 50%;
+      color: var(--navy-dark);
+      box-shadow: var(--shadow-hover);
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity var(--transition), transform var(--transition),
+                  visibility var(--transition), background var(--transition);
+    }
+
+    .back-to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
+    .back-to-top:hover { background: var(--gold-dark); color: var(--white); }
+    .back-to-top svg { width: 22px; height: 22px; }
+
+    /* ==========================================================
+       9. BREAKPOINT: TABLET (>= 768px)
+       ========================================================== */
+    @media (min-width: 768px) {
+      /* Nav: inline links, no hamburger */
+      .nav-toggle { display: none; }
+
+      .nav-menu {
+        position: static;
+        display: flex;
+        flex-direction: row;
+        gap: var(--space-6);
+        padding: 0;
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+      }
+
+      .nav-menu a { position: relative; padding: var(--space-2) 0; }
+
+      /* Animated gold underline on hover */
+      .nav-menu a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--gold);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform var(--transition);
+      }
+
+      .nav-menu a:hover::after { transform: scaleX(1); }
+
+      /* Hero */
+      .hero-actions { flex-direction: row; justify-content: center; max-width: none; }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+
+      /* Form: pair up short fields */
+      .form-grid { grid-template-columns: 1fr 1fr; }
+      .form-field.full { grid-column: 1 / -1; }
+
+      /* Footer */
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-bottom { display: flex; justify-content: space-between; gap: var(--space-5); text-align: left; }
+      .footer-bottom .disclaimer { margin-top: 0; text-align: right; }
+    }
+
+    /* ==========================================================
+       10. BREAKPOINT: DESKTOP (>= 1024px)
+       ========================================================== */
+    @media (min-width: 1024px) {
+      :root { --per-view: 3; --nav-h: 76px; }
+
+      .logo { font-size: 1.5rem; }
+
+      /* Contact: info left, form right */
+      .contact-grid { grid-template-columns: 2fr 3fr; align-items: start; }
+      .contact-info { position: sticky; top: calc(var(--nav-h) + var(--space-5)); }
+
+      /* Footer: 4 columns */
+      .footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1.5fr; }
+    }
+
+    /* ==========================================================
+       11. REDUCED MOTION
+       ========================================================== */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .js .fade-in { opacity: 1; transform: none; transition: none; }
+      .carousel-track { transition: none; }
+      .btn:hover, .testimonial-card:hover, .social-links a:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================
+       HEADER / STICKY NAVIGATION
+       ========================================================== -->
+  <header class="site-header">
+    <div class="container nav-bar">
+      <a href="#home" class="logo" aria-label="Horizon Wealth Planning, home">Horizon <span>Wealth</span> Planning</a>
+
+      <button class="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav aria-label="Primary">
+        <ul class="nav-menu" id="primary-nav">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ==========================================================
+         1. HERO SECTION
+         ========================================================== -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="container">
+        <h1 id="hero-title" class="fade-in">Plan Today. <em>Prosper Tomorrow.</em></h1>
+        <p class="hero-sub fade-in">
+          Personalised retirement, investment and insurance planning designed around your goals, so you can face every stage of life with confidence.
+        </p>
+
+        <div class="hero-actions fade-in">
+          <a href="#contact" class="btn btn-gold">Book a Free Consultation</a>
+          <a href="#testimonials" class="btn btn-outline">Learn More</a>
+        </div>
+
+        <!-- Trust stats: numbers count up when scrolled into view -->
+        <ul class="stats fade-in" id="stats" aria-label="Firm highlights">
+          <li>
+            <span class="stat-number" data-target="15" data-suffix="+">15+</span>
+            <span class="stat-label">Years Experience</span>
+          </li>
+          <li>
+            <span class="stat-number" data-target="1200" data-suffix="+">1,200+</span>
+            <span class="stat-label">Clients</span>
+          </li>
+          <li>
+            <span class="stat-number" data-target="500" data-prefix="$" data-suffix="M">$500M</span>
+            <span class="stat-label">Assets Advised</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         2. TESTIMONIAL SECTION
+         ========================================================== -->
+    <section class="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-header fade-in">
+          <h2 id="testimonials-title">What Our Clients Say</h2>
+          <p>Real stories from people who trusted us with their financial future.</p>
+        </div>
+
+        <div class="carousel fade-in" id="carousel" role="region" aria-roledescription="carousel" aria-label="Client testimonials" tabindex="0">
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="carousel-track" aria-live="off">
+
+              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 5">
+                <figure class="testimonial-card">
+                  <div class="stars" role="img" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <blockquote>"Horizon gave us a clear retirement roadmap for the first time. We finally know exactly when we can stop working, and what it will take to get there."</blockquote>
+                  <figcaption class="testimonial-author">
+                    <img src="https://i.pravatar.cc/112?img=47" alt="Portrait of Sarah Tan" width="56" height="56" loading="lazy">
+                    <span>
+                      <span class="author-name">Sarah Tan</span>
+                      <span class="author-role">Secondary School Teacher</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 5">
+                <figure class="testimonial-card">
+                  <div class="stars" role="img" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <blockquote>"As a business owner my finances were all over the place. The team untangled everything and built an investment plan that actually fits my cash flow."</blockquote>
+                  <figcaption class="testimonial-author">
+                    <img src="https://i.pravatar.cc/112?img=12" alt="Portrait of David Morgan" width="56" height="56" loading="lazy">
+                    <span>
+                      <span class="author-name">David Morgan</span>
+                      <span class="author-role">Restaurant Owner</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 5">
+                <figure class="testimonial-card">
+                  <div class="stars" role="img" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <blockquote>"They explained our insurance options in plain language and never pushed a product. We ended up with better cover for less than we were paying before."</blockquote>
+                  <figcaption class="testimonial-author">
+                    <img src="https://i.pravatar.cc/112?img=32" alt="Portrait of Priya Nair" width="56" height="56" loading="lazy">
+                    <span>
+                      <span class="author-name">Priya Nair</span>
+                      <span class="author-role">Paediatric Nurse</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="4 of 5">
+                <figure class="testimonial-card">
+                  <div class="stars" role="img" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <blockquote>"Estate planning felt overwhelming until we sat down with Horizon. Everything is now documented, organised and our children know the plan."</blockquote>
+                  <figcaption class="testimonial-author">
+                    <img src="https://i.pravatar.cc/112?img=60" alt="Portrait of Robert Lim" width="56" height="56" loading="lazy">
+                    <span>
+                      <span class="author-name">Robert Lim</span>
+                      <span class="author-role">Retired Civil Engineer</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
+
+              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="5 of 5">
+                <figure class="testimonial-card">
+                  <div class="stars" role="img" aria-label="5 out of 5 stars">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  </div>
+                  <blockquote>"I started investing in my late twenties with no idea what I was doing. My adviser set realistic targets and checks in every quarter. Highly recommended."</blockquote>
+                  <figcaption class="testimonial-author">
+                    <img src="https://i.pravatar.cc/112?img=5" alt="Portrait of Emily Carter" width="56" height="56" loading="lazy">
+                    <span>
+                      <span class="author-name">Emily Carter</span>
+                      <span class="author-role">Software Engineer</span>
+                    </span>
+                  </figcaption>
+                </figure>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Carousel controls: previous / dots / next -->
+          <div class="carousel-controls">
+            <button class="carousel-arrow" id="carousel-prev" type="button" aria-label="Previous testimonial" aria-controls="carousel-track">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="carousel-dots" id="carousel-dots" role="group" aria-label="Choose testimonial"></div>
+            <button class="carousel-arrow" id="carousel-next" type="button" aria-label="Next testimonial" aria-controls="carousel-track">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         3. ENQUIRY FORM SECTION
+         ========================================================== -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="section-header fade-in">
+          <h2 id="contact-title">Start Your Financial Journey</h2>
+          <p>Tell us a little about yourself and an adviser will be in touch within one business day.</p>
+        </div>
+
+        <div class="contact-grid">
+
+          <!-- Left column: contact information -->
+          <aside class="contact-info fade-in" aria-label="Contact information">
+            <h3>Get in Touch</h3>
+            <p>Prefer to talk to someone directly? Reach us through any of the channels below.</p>
+
+            <ul class="contact-list">
+              <li>
+                <span class="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <span>
+                  <strong>Address</strong>
+                  120 Harbour Street, Level 18<br>Sydney NSW 2000
+                </span>
+              </li>
+              <li>
+                <span class="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+                </span>
+                <span>
+                  <strong>Phone</strong>
+                  <a href="tel:+61255501234">+61 2 5550 1234</a>
+                </span>
+              </li>
+              <li>
+                <span class="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
+                </span>
+                <span>
+                  <strong>Email</strong>
+                  <a href="mailto:hello@horizonwealth.example">hello@horizonwealth.example</a>
+                </span>
+              </li>
+              <li>
+                <span class="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </span>
+                <span>
+                  <strong>Office Hours</strong>
+                  Mon to Fri: 9:00am to 6:00pm<br>Sat: 10:00am to 1:00pm
+                </span>
+              </li>
+            </ul>
+          </aside>
+
+          <!-- Right column: enquiry form -->
+          <div class="form-card fade-in" id="form-card">
+            <form id="enquiry-form" novalidate>
+              <div class="form-grid">
+
+                <div class="form-field full">
+                  <label for="fullName">Full Name <span class="required" aria-hidden="true">*</span></label>
+                  <input type="text" id="fullName" name="fullName" autocomplete="name" required aria-required="true" aria-describedby="fullName-error">
+                  <p class="field-error" id="fullName-error" role="alert"></p>
+                </div>
+
+                <div class="form-field">
+                  <label for="email">Email <span class="required" aria-hidden="true">*</span></label>
+                  <input type="email" id="email" name="email" autocomplete="email" required aria-required="true" aria-describedby="email-error">
+                  <p class="field-error" id="email-error" role="alert"></p>
+                </div>
+
+                <div class="form-field">
+                  <label for="phone">Phone <span class="required" aria-hidden="true">*</span></label>
+                  <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required aria-required="true" aria-describedby="phone-error">
+                  <p class="field-error" id="phone-error" role="alert"></p>
+                </div>
+
+                <div class="form-field">
+                  <label for="ageRange">Age Range <span class="required" aria-hidden="true">*</span></label>
+                  <select id="ageRange" name="ageRange" required aria-required="true" aria-describedby="ageRange-error">
+                    <option value="">Select your age range</option>
+                    <option>18 to 24</option>
+                    <option>25 to 34</option>
+                    <option>35 to 44</option>
+                    <option>45 to 54</option>
+                    <option>55 to 64</option>
+                    <option>65 and above</option>
+                  </select>
+                  <p class="field-error" id="ageRange-error" role="alert"></p>
+                </div>
+
+                <div class="form-field">
+                  <label for="interest">Area of Interest <span class="required" aria-hidden="true">*</span></label>
+                  <select id="interest" name="interest" required aria-required="true" aria-describedby="interest-error">
+                    <option value="">Select an area</option>
+                    <option>Retirement Planning</option>
+                    <option>Investment</option>
+                    <option>Insurance</option>
+                    <option>Estate Planning</option>
+                    <option>Tax Planning</option>
+                  </select>
+                  <p class="field-error" id="interest-error" role="alert"></p>
+                </div>
+
+                <fieldset class="form-field full" aria-describedby="contactMethod-error">
+                  <legend>Preferred Contact Method <span class="required" aria-hidden="true">*</span></legend>
+                  <div class="radio-group" id="contactMethod-group">
+                    <label><input type="radio" name="contactMethod" value="Email"> Email</label>
+                    <label><input type="radio" name="contactMethod" value="Phone"> Phone</label>
+                    <label><input type="radio" name="contactMethod" value="WhatsApp"> WhatsApp</label>
+                  </div>
+                  <p class="field-error" id="contactMethod-error" role="alert"></p>
+                </fieldset>
+
+                <div class="form-field full">
+                  <label for="message">Message <span class="required" aria-hidden="true">*</span></label>
+                  <textarea id="message" name="message" required aria-required="true" aria-describedby="message-error" placeholder="Tell us about your goals"></textarea>
+                  <p class="field-error" id="message-error" role="alert"></p>
+                </div>
+
+                <div class="form-field full">
+                  <label class="checkbox-label" id="consent-label" for="consent">
+                    <input type="checkbox" id="consent" name="consent" required aria-required="true" aria-describedby="consent-error">
+                    <span>I agree to be contacted by Horizon Wealth Planning about my enquiry. <span class="required" aria-hidden="true">*</span></span>
+                  </label>
+                  <p class="field-error" id="consent-error" role="alert"></p>
+                </div>
+
+                <div class="form-field full">
+                  <button type="submit" class="btn btn-gold btn-submit" id="submit-btn">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span class="btn-label">Send Enquiry</span>
+                  </button>
+                </div>
+
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================
+       4. FOOTER
+       ========================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+
+      <!-- Column 1: logo + description -->
+      <div class="footer-about">
+        <a href="#home" class="logo">Horizon <span>Wealth</span> Planning</a>
+        <p>An independent financial planning firm helping individuals and families build, protect and pass on their wealth with clarity and confidence.</p>
+      </div>
+
+      <!-- Column 2: quick links -->
+      <nav aria-label="Quick links">
+        <h3>Quick Links</h3>
+        <ul class="footer-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact">Book a Consultation</a></li>
+        </ul>
+      </nav>
+
+      <!-- Column 3: services -->
+      <div>
+        <h3>Services</h3>
+        <ul class="footer-links">
+          <li>Retirement Planning</li>
+          <li>Investment Management</li>
+          <li>Insurance Advice</li>
+          <li>Estate Planning</li>
+          <li>Tax Planning</li>
+        </ul>
+      </div>
+
+      <!-- Column 4: newsletter + social icons -->
+      <div>
+        <h3>Newsletter</h3>
+        <p>Monthly insights on markets and money, straight to your inbox.</p>
+        <form class="newsletter-form" id="newsletter-form" novalidate>
+          <label for="newsletter-email" class="visually-hidden">Email address</label>
+          <input type="email" id="newsletter-email" name="newsletterEmail" placeholder="Your email" autocomplete="email" aria-describedby="newsletter-message">
+          <button type="submit" class="btn btn-gold">Subscribe</button>
+        </form>
+        <p class="newsletter-message" id="newsletter-message" role="status"></p>
+
+        <ul class="social-links" aria-label="Social media">
+          <li>
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="#" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 00-2.13 1.38A5.9 5.9 0 00.63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13a5.9 5.9 0 002.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 002.13-1.38 5.9 5.9 0 001.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 00-1.38-2.13A5.9 5.9 0 0019.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-11.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>
+            </a>
+          </li>
+          <li>
+            <a href="#" aria-label="X (formerly Twitter)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64z"/></svg>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar: copyright + disclaimer -->
+    <div class="container footer-bottom">
+      <p>&copy; <span id="year"></span> Horizon Wealth Planning. All rights reserved.</p>
+      <p class="disclaimer">This website is for informational purposes only and does not constitute financial advice.</p>
+    </div>
+  </footer>
+
+  <!-- ==========================================================
+       BACK TO TOP BUTTON
+       ========================================================== -->
+  <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <script>
+    (function () {
+      "use strict";
+
+      // Flag that JS is running so fade-in styles only hide content when they can be revealed
+      document.documentElement.classList.add("js");
+
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+      /* ==========================================================
+         1. MOBILE NAV (hamburger toggle)
+         ========================================================== */
+      var navToggle = document.querySelector(".nav-toggle");
+      var navMenu = document.getElementById("primary-nav");
+
+      function setMenu(open) {
+        navMenu.classList.toggle("is-open", open);
+        navToggle.setAttribute("aria-expanded", String(open));
+      }
+
+      navToggle.addEventListener("click", function () {
+        setMenu(navToggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      // Close the menu after choosing a link
+      navMenu.addEventListener("click", function (e) {
+        if (e.target.closest("a")) setMenu(false);
+      });
+
+      // Close on Escape and return focus to the toggle
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && navToggle.getAttribute("aria-expanded") === "true") {
+          setMenu(false);
+          navToggle.focus();
+        }
+      });
+
+      // Reset when resizing up to the inline (tablet/desktop) nav
+      window.matchMedia("(min-width: 768px)").addEventListener("change", function (e) {
+        if (e.matches) setMenu(false);
+      });
+
+      /* ==========================================================
+         2. FADE-IN ON SCROLL (IntersectionObserver)
+         ========================================================== */
+      var fadeEls = document.querySelectorAll(".fade-in");
+
+      if ("IntersectionObserver" in window && !reduceMotion) {
+        var fadeObserver = new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+
+        fadeEls.forEach(function (el) { fadeObserver.observe(el); });
+      } else {
+        fadeEls.forEach(function (el) { el.classList.add("is-visible"); });
+      }
+
+      /* ==========================================================
+         3. STATS COUNT-UP
+         ========================================================== */
+      var statsEl = document.getElementById("stats");
+      var statNumbers = statsEl.querySelectorAll(".stat-number");
+
+      function formatStat(el, value) {
+        return (el.dataset.prefix || "") + value.toLocaleString("en-US") + (el.dataset.suffix || "");
+      }
+
+      function countUp(el) {
+        var target = Number(el.dataset.target);
+        var duration = 2000;
+        var start = null;
+
+        function step(now) {
+          if (start === null) start = now;
+          var progress = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+          el.textContent = formatStat(el, Math.round(target * eased));
+          if (progress < 1) requestAnimationFrame(step);
+        }
+
+        el.textContent = formatStat(el, 0);
+        requestAnimationFrame(step);
+      }
+
+      if ("IntersectionObserver" in window && !reduceMotion) {
+        var statsObserver = new IntersectionObserver(function (entries, obs) {
+          if (entries[0].isIntersecting) {
+            statNumbers.forEach(countUp);
+            obs.disconnect(); // run once
+          }
+        }, { threshold: 0.4 });
+
+        statsObserver.observe(statsEl);
+      }
+
+      /* ==========================================================
+         4. TESTIMONIAL CAROUSEL
+         ========================================================== */
+      var carousel = document.getElementById("carousel");
+      var track = document.getElementById("carousel-track");
+      var slides = Array.prototype.slice.call(track.children);
+      var dotsWrap = document.getElementById("carousel-dots");
+      var prevBtn = document.getElementById("carousel-prev");
+      var nextBtn = document.getElementById("carousel-next");
+      var desktopMq = window.matchMedia("(min-width: 1024px)");
+
+      var AUTO_DELAY = 5000;
+      var current = 0;
+      var timer = null;
+      var paused = false;
+
+      // 1 card on mobile/tablet, 3 on desktop (mirrors --per-view in CSS)
+      function perView() { return desktopMq.matches ? 3 : 1; }
+      function maxIndex() { return Math.max(0, slides.length - perView()); }
+
+      function buildDots() {
+        dotsWrap.innerHTML = "";
+        for (var i = 0; i <= maxIndex(); i++) {
+          var dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "carousel-dot";
+          dot.setAttribute("aria-label", "Go to testimonial " + (i + 1));
+          dot.dataset.index = i;
+          dotsWrap.appendChild(dot);
+        }
+      }
+
+      function goTo(index) {
+        var max = maxIndex();
+        // Wrap around at both ends
+        if (index > max) index = 0;
+        if (index < 0) index = max;
+        current = index;
+
+        track.style.transform = "translateX(" + (-current * 100 / perView()) + "%)";
+
+        // Hide off-screen slides from assistive tech
+        slides.forEach(function (slide, i) {
+          var visible = i >= current && i < current + perView();
+          slide.setAttribute("aria-hidden", String(!visible));
+        });
+
+        Array.prototype.forEach.call(dotsWrap.children, function (dot, i) {
+          if (i === current) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+      }
+
+      function stopAuto() {
+        clearInterval(timer);
+        timer = null;
+        track.setAttribute("aria-live", "polite");
+      }
+
+      function startAuto() {
+        stopAuto();
+        if (paused || reduceMotion) return;
+        track.setAttribute("aria-live", "off");
+        timer = setInterval(function () { goTo(current + 1); }, AUTO_DELAY);
+      }
+
+      // Arrows and dots (restart the timer so a manual move gets a full 5s)
+      prevBtn.addEventListener("click", function () { goTo(current - 1); startAuto(); });
+      nextBtn.addEventListener("click", function () { goTo(current + 1); startAuto(); });
+
+      dotsWrap.addEventListener("click", function (e) {
+        var dot = e.target.closest(".carousel-dot");
+        if (!dot) return;
+        goTo(Number(dot.dataset.index));
+        startAuto();
+      });
+
+      // Pause on hover and on keyboard focus
+      carousel.addEventListener("mouseenter", function () { paused = true; stopAuto(); });
+      carousel.addEventListener("mouseleave", function () { paused = false; startAuto(); });
+      carousel.addEventListener("focusin", function () { paused = true; stopAuto(); });
+      carousel.addEventListener("focusout", function (e) {
+        if (!carousel.contains(e.relatedTarget)) { paused = false; startAuto(); }
+      });
+
+      // Keyboard: left/right arrow keys
+      carousel.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft") { goTo(current - 1); }
+        else if (e.key === "ArrowRight") { goTo(current + 1); }
+      });
+
+      // Touch swipe (50px horizontal threshold)
+      var touchStartX = 0;
+      var touchStartY = 0;
+
+      track.addEventListener("touchstart", function (e) {
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+        stopAuto();
+      }, { passive: true });
+
+      track.addEventListener("touchend", function (e) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+          goTo(dx < 0 ? current + 1 : current - 1);
+        }
+        startAuto();
+      }, { passive: true });
+
+      // Rebuild when crossing the desktop breakpoint (cards per view changes)
+      desktopMq.addEventListener("change", function () {
+        buildDots();
+        goTo(Math.min(current, maxIndex()));
+      });
+
+      // Don't advance while the tab is hidden
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) stopAuto(); else startAuto();
+      });
+
+      buildDots();
+      goTo(0);
+      startAuto();
+
+      /* ==========================================================
+         5. ENQUIRY FORM: VALIDATION + SUBMIT
+         ========================================================== */
+      var form = document.getElementById("enquiry-form");
+      var formCard = document.getElementById("form-card");
+      var submitBtn = document.getElementById("submit-btn");
+      var radioGroup = document.getElementById("contactMethod-group");
+      var consentLabel = document.getElementById("consent-label");
+      var submitAttempted = false;
+
+      // Each validator returns an error message, or "" when valid
+      var validators = {
+        fullName: function () {
+          var v = form.fullName.value.trim();
+          if (!v) return "Please enter your full name.";
+          if (v.length < 2) return "Name must be at least 2 characters.";
+          return "";
+        },
+        email: function () {
+          var v = form.email.value.trim();
+          if (!v) return "Please enter your email address.";
+          if (!EMAIL_RE.test(v)) return "Please enter a valid email address.";
+          return "";
+        },
+        phone: function () {
+          var v = form.phone.value.replace(/\s+/g, "");
+          if (!v) return "Please enter your phone number.";
+          if (!/^\d+$/.test(v)) return "Phone number must contain digits only.";
+          if (v.length < 8 || v.length > 15) return "Phone number must be 8 to 15 digits.";
+          return "";
+        },
+        ageRange: function () {
+          return form.ageRange.value ? "" : "Please select your age range.";
+        },
+        interest: function () {
+          return form.interest.value ? "" : "Please select an area of interest.";
+        },
+        contactMethod: function () {
+          return form.contactMethod.value ? "" : "Please choose a preferred contact method.";
+        },
+        message: function () {
+          return form.message.value.trim() ? "" : "Please enter a message.";
+        },
+        consent: function () {
+          return form.consent.checked ? "" : "Please agree to be contacted before submitting.";
+        }
+      };
+
+      // The element that receives the red border for each field
+      function highlightTarget(name) {
+        if (name === "contactMethod") return radioGroup;
+        if (name === "consent") return consentLabel;
+        return form[name];
+      }
+
+      // The element that should take focus / aria-invalid for each field
+      function inputFor(name) {
+        if (name === "contactMethod") return form.querySelector('input[name="contactMethod"]');
+        return form[name];
+      }
+
+      function validateField(name) {
+        var message = validators[name]();
+        var invalid = Boolean(message);
+
+        document.getElementById(name + "-error").textContent = message;
+        highlightTarget(name).classList.toggle("is-invalid", invalid);
+
+        if (name === "contactMethod") {
+          form.querySelectorAll('input[name="contactMethod"]').forEach(function (r) {
+            r.setAttribute("aria-invalid", String(invalid));
+          });
+        } else {
+          form[name].setAttribute("aria-invalid", String(invalid));
+        }
+        return !invalid;
+      }
+
+      // Live re-validation: on blur always, on input/change once a submit was attempted
+      function handleFieldEvent(e) {
+        var name = e.target.name;
+        if (!validators[name]) return;
+        if (e.type === "focusout" || submitAttempted) validateField(name);
+      }
+
+      form.addEventListener("focusout", handleFieldEvent);
+      form.addEventListener("input", handleFieldEvent);
+      form.addEventListener("change", handleFieldEvent);
+
+      function showSuccess(name) {
+        var panel = document.createElement("div");
+        panel.className = "form-success";
+        panel.setAttribute("role", "status");
+        panel.setAttribute("tabindex", "-1");
+        panel.innerHTML =
+          '<span class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>' +
+          "<h3></h3>" +
+          "<p>Your enquiry has been received. One of our advisers will contact you within one business day.</p>";
+        // textContent keeps user input from being interpreted as HTML
+        panel.querySelector("h3").textContent = "Thank you, " + name + "!";
+
+        formCard.replaceChildren(panel);
+        panel.focus();
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault(); // no page reload
+        submitAttempted = true;
+
+        var firstInvalid = null;
+        Object.keys(validators).forEach(function (name) {
+          if (!validateField(name) && !firstInvalid) firstInvalid = name;
+        });
+
+        if (firstInvalid) {
+          inputFor(firstInvalid).focus();
+          return;
+        }
+
+        var data = {
+          fullName: form.fullName.value.trim(),
+          email: form.email.value.trim(),
+          phone: form.phone.value.replace(/\s+/g, ""),
+          ageRange: form.ageRange.value,
+          areaOfInterest: form.interest.value,
+          preferredContactMethod: form.contactMethod.value,
+          message: form.message.value.trim(),
+          consent: form.consent.checked
+        };
+
+        // Loading state for 1.5s, then success message
+        submitBtn.disabled = true;
+        submitBtn.classList.add("is-loading");
+        submitBtn.querySelector(".btn-label").textContent = "Sending...";
+
+        setTimeout(function () {
+          console.log(JSON.stringify(data, null, 2));
+          showSuccess(data.fullName);
+        }, 1500);
+      });
+
+      /* ==========================================================
+         6. NEWSLETTER SIGNUP
+         ========================================================== */
+      var newsletterForm = document.getElementById("newsletter-form");
+      var newsletterEmail = document.getElementById("newsletter-email");
+      var newsletterMsg = document.getElementById("newsletter-message");
+
+      function setNewsletterState(message, isError) {
+        newsletterMsg.textContent = message;
+        newsletterMsg.classList.toggle("is-error", isError);
+        newsletterMsg.classList.toggle("is-success", !isError);
+        newsletterEmail.classList.toggle("is-invalid", isError);
+        newsletterEmail.setAttribute("aria-invalid", String(isError));
+      }
+
+      newsletterForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var value = newsletterEmail.value.trim();
+
+        if (!value) {
+          setNewsletterState("Please enter your email address.", true);
+          newsletterEmail.focus();
+        } else if (!EMAIL_RE.test(value)) {
+          setNewsletterState("Please enter a valid email address.", true);
+          newsletterEmail.focus();
+        } else {
+          setNewsletterState("Thanks for subscribing!", false);
+          newsletterForm.reset();
+        }
+      });
+
+      /* ==========================================================
+         7. FOOTER YEAR + BACK TO TOP
+         ========================================================== */
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      var backToTop = document.getElementById("back-to-top");
+
+      function toggleBackToTop() {
+        backToTop.classList.toggle("is-visible", window.scrollY > 400);
+      }
+
+      window.addEventListener("scroll", toggleBackToTop, { passive: true });
+      toggleBackToTop();
+
+      backToTop.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>
