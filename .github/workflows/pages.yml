@@ -15,6 +15,10 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # The commit whose index.html is the original (v1) site. It stays published at the site root.
+  V1_COMMIT: 6675e8570ad79aebf244f2bafafe72a4dfc909b1
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,23 +26,63 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      # Actions are pinned to full commit SHAs; Dependabot keeps them current
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # full history, so the v1 commit is available
+          persist-credentials: false
 
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
-      # Publish only the site itself, not README.md or CLAUDE.md
+      # Publish only the site itself, not README.md or CLAUDE.md:
+      #   /      the v1 page, exactly as it was at V1_COMMIT
+      #   /v2/   the current index.html, with a Content-Security-Policy added
       - name: Stage site files
+        env:
+          SRC: index.html
+          OUT: _site/v2/index.html
         run: |
-          mkdir _site
-          cp index.html _site/
+          mkdir -p _site/v2
+          git show "$V1_COMMIT:index.html" > _site/index.html
+
+          # The CSP allows the one inline <style> and <script> by hash, so the hashes are
+          # computed here from the file being deployed and can never go stale.
+          node <<'EOF'
+          const fs = require("fs");
+          const crypto = require("crypto");
+          const marker = /<!-- CSP:[^>]*-->/;
+          const html = fs.readFileSync(process.env.SRC, "utf8").replace(/\r\n/g, "\n");
+
+          const hashOf = (tag) => {
+            const found = html.match(new RegExp("<" + tag + ">([\\s\\S]*?)</" + tag + ">", "g"));
+            if (!found || found.length !== 1) throw new Error("Expected exactly one inline <" + tag + "> tag");
+            const body = found[0].slice(tag.length + 2, -(tag.length + 3));
+            return "'sha256-" + crypto.createHash("sha256").update(body, "utf8").digest("base64") + "'";
+          };
+
+          const csp = [
+            "default-src 'none'",
+            "script-src " + hashOf("script"),
+            "style-src " + hashOf("style") + " https://fonts.googleapis.com",
+            "font-src https://fonts.gstatic.com",
+            "img-src 'self' data:",
+            "base-uri 'none'",
+            "form-action 'none'",
+            "require-trusted-types-for 'script'"
+          ].join("; ");
+
+          if (!marker.test(html)) throw new Error("CSP marker comment not found in " + process.env.SRC);
+          fs.writeFileSync(process.env.OUT, html.replace(marker, '<meta http-equiv="Content-Security-Policy" content="' + csp + '">'));
+          console.log(csp);
+          EOF
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

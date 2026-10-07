@@ -2,14 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- CSP: injected here at deploy time by .github/workflows/pages.yml (see CLAUDE.md, "Security") -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Horizon Wealth Planning offers personalised retirement, investment and insurance planning to help you plan today and prosper tomorrow.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0A1524">
+  <meta name="description" content="Horizon Wealth Planning offers independent, fee-only retirement, investment and insurance planning to help you plan today and prosper tomorrow.">
   <title>Horizon Wealth Planning | Plan Today. Prosper Tomorrow.</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
 
   <style>
     /* ==========================================================
@@ -17,19 +21,24 @@
        ========================================================== */
     :root {
       /* Colours */
-      --navy: #0B2545;
-      --navy-dark: #071A33;
-      --navy-light: #13315C;
-      --gold: #C9A227;
-      --gold-dark: #A9871B;
-      --bg: #F7F9FC;
-      --white: #FFFFFF;
-      --text: #1F2A3D;
-      --text-muted: #5B6779;
-      --text-on-navy: #D6DEEA;
-      --border: #D9E0EA;
-      --error: #C0392B;
-      --success: #1E7E4A;
+      --ink: #0A1524;
+      --ink-2: #101F35;
+      --ink-3: #1A2E4C;
+      --paper: #F6F1E7;
+      --paper-2: #ECE4D4;
+      --card: #FFFDF9;
+      --brass: #CBA65E;
+      --brass-bright: #E8CD92;
+      --brass-deep: #7A5A1C;
+      --text: #17202E;
+      --text-muted: #566072;
+      --text-on-ink: #C9D2E0;
+      --line: rgba(10, 21, 36, 0.12);
+      --line-strong: rgba(10, 21, 36, 0.26);
+      --line-on-ink: rgba(255, 255, 255, 0.14);
+      --glass: rgba(255, 255, 255, 0.06);
+      --error: #B3321F;
+      --success: #1F7A4D;
 
       /* Spacing scale */
       --space-1: 0.25rem;
@@ -40,21 +49,29 @@
       --space-6: 2rem;
       --space-7: 3rem;
       --space-8: 5rem;
+      --space-9: 7.5rem;
 
       /* Typography */
-      --font-heading: "Playfair Display", Georgia, serif;
-      --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-heading: "Fraunces", "Iowan Old Style", Georgia, serif;
+      --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
       /* Misc */
-      --radius: 10px;
-      --shadow: 0 6px 24px rgba(11, 37, 69, 0.08);
-      --shadow-hover: 0 12px 32px rgba(11, 37, 69, 0.16);
-      --transition: 0.25s ease;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --radius-pill: 999px;
+      --shadow: 0 1px 2px rgba(10, 21, 36, 0.05), 0 12px 32px -12px rgba(10, 21, 36, 0.18);
+      --shadow-hover: 0 2px 4px rgba(10, 21, 36, 0.06), 0 24px 48px -16px rgba(10, 21, 36, 0.3);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --transition: 0.25s var(--ease-out);
       --nav-h: 68px;
-      --container: 1180px;
+      --container: 1200px;
 
-      /* Carousel: cards visible at once (overridden at 1024px) */
-      --per-view: 1;
+      /* Film-grain texture layered over flat colour fields */
+      --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+
+      /* Sliders: cards visible at once (overridden at 768px and 1024px; the JS reads this value) */
+      --per-view: 1.12;
     }
 
     /* ==========================================================
@@ -72,30 +89,39 @@
     body {
       margin: 0;
       font-family: var(--font-body);
-      font-size: 1rem;
+      font-size: 1.0625rem;
       line-height: 1.6;
       color: var(--text);
-      background: var(--bg);
+      background: var(--paper);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     h1, h2, h3, h4 {
       font-family: var(--font-heading);
-      line-height: 1.2;
+      font-weight: 300;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
       margin: 0 0 var(--space-4);
-      color: var(--navy);
+      color: var(--ink);
     }
 
+    h2 { font-size: clamp(2rem, 5vw, 3.4rem); }
+    h2 em, h3 em { font-weight: 400; color: var(--brass-deep); }
+    h3 { font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+
     p { margin: 0 0 var(--space-4); }
-    img { max-width: 100%; display: block; }
+    img, svg { max-width: 100%; display: block; }
     a { color: inherit; }
-    ul { list-style: none; margin: 0; padding: 0; }
+    ul, ol { list-style: none; margin: 0; padding: 0; }
     button, input, select, textarea { font: inherit; color: inherit; }
 
     :focus-visible {
-      outline: 3px solid var(--gold);
-      outline-offset: 2px;
+      outline: 3px solid var(--brass);
+      outline-offset: 3px;
     }
+
+    ::selection { background: var(--brass); color: var(--ink); }
 
     .container {
       width: 100%;
@@ -104,27 +130,25 @@
       padding-inline: var(--space-5);
     }
 
-    .section { padding-block: var(--space-8); }
+    .section { position: relative; padding-block: var(--space-8); }
 
-    .section-header {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto var(--space-7);
+    .section-header { max-width: 720px; margin-bottom: var(--space-7); }
+    .section-header p { color: var(--text-muted); margin: 0; max-width: 56ch; }
+
+    /* Small uppercase label above section titles */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--brass-deep);
     }
 
-    .section-header h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
-    .section-header p { color: var(--text-muted); margin: 0; }
-
-    /* Gold underline accent below section titles */
-    .section-header h2::after {
-      content: "";
-      display: block;
-      width: 64px;
-      height: 3px;
-      margin: var(--space-4) auto 0;
-      background: var(--gold);
-      border-radius: 2px;
-    }
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
 
     .visually-hidden {
       position: absolute;
@@ -135,41 +159,71 @@
       white-space: nowrap;
     }
 
+    /* Hidden when JS is unavailable (features that cannot work without it) */
+    html:not(.js) .js-only { display: none; }
+
+    /* Icons: stroked by default, filled with .icon-fill (shapes live in the sprite at the top of <body>) */
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .icon-fill { fill: currentColor; stroke: none; }
+
     /* Buttons */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: var(--space-2);
-      padding: 0.85rem 1.6rem;
-      border: 2px solid transparent;
-      border-radius: var(--radius);
+      padding: 0.9rem 1.6rem;
+      border: 1.5px solid transparent;
+      border-radius: var(--radius-pill);
       font-weight: 600;
+      line-height: 1.2;
       text-decoration: none;
       cursor: pointer;
       transition: background var(--transition), color var(--transition),
-                  border-color var(--transition), transform var(--transition),
-                  box-shadow var(--transition);
+                  border-color var(--transition), box-shadow var(--transition),
+                  transform 0.35s var(--ease-spring);
     }
 
-    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+    .btn .icon { width: 18px; height: 18px; transition: transform 0.35s var(--ease-spring); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:hover .icon { transform: translateX(4px); }
+    .btn:active { transform: translateY(0) scale(0.98); }
 
-    .btn-gold { background: var(--gold); color: var(--navy-dark); }
-    .btn-gold:hover { background: var(--gold-dark); color: var(--white); }
+    .btn-brass { background: var(--brass); color: var(--ink); box-shadow: 0 10px 28px -12px rgba(203, 166, 94, 0.7); }
+    .btn-brass:hover { background: var(--brass-bright); }
 
-    .btn-outline { border-color: var(--white); color: var(--white); background: transparent; }
-    .btn-outline:hover { background: var(--white); color: var(--navy); }
+    .btn-ghost { border-color: var(--line-on-ink); color: var(--paper); background: var(--glass); }
+    .btn-ghost:hover { border-color: var(--brass); background: rgba(255, 255, 255, 0.1); }
 
-    .btn[disabled] { opacity: 0.8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-ink { background: var(--ink); color: var(--paper); }
+    .btn-ink:hover { background: var(--ink-3); box-shadow: var(--shadow-hover); }
+
+    .btn[disabled] { opacity: 0.75; cursor: not-allowed; transform: none; box-shadow: none; }
 
     /* Fade-in-on-scroll (only applied when JS is available) */
     .js .fade-in {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
+      transform: translateY(22px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
     }
 
     .js .fade-in.is-visible { opacity: 1; transform: none; }
+
+    /* Staggered reveals */
+    .js .fade-in[data-delay="1"] { transition-delay: 0.08s; }
+    .js .fade-in[data-delay="2"] { transition-delay: 0.16s; }
+    .js .fade-in[data-delay="3"] { transition-delay: 0.24s; }
+    .js .fade-in[data-delay="4"] { transition-delay: 0.32s; }
 
     /* ==========================================================
        3. HEADER / STICKY NAV
@@ -179,27 +233,56 @@
       top: 0;
       z-index: 100;
       height: var(--nav-h);
-      background: var(--navy);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+      background: rgba(10, 21, 36, 0.9);
+      border-bottom: 1px solid var(--line-on-ink);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      backdrop-filter: blur(14px) saturate(140%);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    /* Transparent over the hero until the page is scrolled or the mobile menu is open */
+    .js .site-header:not(.is-scrolled):not(.menu-open) {
+      background: transparent;
+      border-color: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    /* Reading progress along the bottom edge of the header */
+    .scroll-progress {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 2px;
+      background: var(--brass);
+      transform: scaleX(var(--progress, 0));
+      transform-origin: left;
     }
 
     .nav-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: var(--space-5);
       height: 100%;
     }
 
     .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
       font-family: var(--font-heading);
-      font-size: clamp(1.05rem, 4.6vw, 1.3rem);
-      font-weight: 700;
-      color: var(--white);
+      font-size: clamp(1.05rem, 4.4vw, 1.25rem);
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--paper);
       text-decoration: none;
       white-space: nowrap;
     }
 
-    .logo span { color: var(--gold); }
+    .logo em { font-weight: 400; color: var(--brass); }
+    .logo-mark { width: 30px; height: 30px; flex: 0 0 auto; fill: none; stroke: var(--brass); stroke-width: 1.5; stroke-linecap: round; }
 
     /* Hamburger button (mobile only) */
     .nav-toggle {
@@ -209,17 +292,18 @@
       gap: 5px;
       width: 44px;
       height: 44px;
+      margin-left: auto;
       padding: 10px;
       background: transparent;
       border: 0;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
     }
 
     .nav-toggle span {
       display: block;
       height: 2px;
-      background: var(--white);
+      background: var(--paper);
       border-radius: 2px;
       transition: transform var(--transition), opacity var(--transition);
     }
@@ -237,239 +321,716 @@
       display: none;
       flex-direction: column;
       padding: var(--space-3) var(--space-5) var(--space-5);
-      background: var(--navy);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+      background: var(--ink);
+      border-bottom: 1px solid var(--line-on-ink);
+      box-shadow: 0 24px 32px rgba(0, 0, 0, 0.3);
     }
 
     .nav-menu.is-open { display: flex; }
 
-    .nav-menu a {
+    .nav-menu a:not(.btn) {
       display: block;
       padding: var(--space-3) 0;
-      color: var(--text-on-navy);
+      color: var(--text-on-ink);
+      font-size: 0.95rem;
       font-weight: 500;
       text-decoration: none;
       transition: color var(--transition);
     }
 
-    .nav-menu a:hover { color: var(--gold); }
+    .nav-menu a:not(.btn):hover,
+    .nav-menu a[aria-current="location"] { color: var(--brass-bright); }
+
+    .nav-menu .btn { margin-top: var(--space-3); padding: 0.7rem 1.2rem; font-size: 0.92rem; }
 
     /* ==========================================================
        4. HERO
        ========================================================== */
     .hero {
       /* Sits underneath the sticky header so it fills the full viewport */
+      position: relative;
       margin-top: calc(-1 * var(--nav-h));
       min-height: 100vh;
       min-height: 100svh;
       padding: calc(var(--nav-h) + var(--space-7)) 0 var(--space-7);
       display: flex;
       align-items: center;
-      color: var(--white);
-      text-align: center;
-      background-color: var(--navy);
+      overflow: hidden;
+      color: var(--paper);
+      background-color: var(--ink);
       background-image:
-        linear-gradient(135deg, rgba(11, 37, 69, 0.94) 0%, rgba(11, 37, 69, 0.78) 55%, rgba(19, 49, 92, 0.68) 100%),
-        url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1920&q=80");
-      background-size: cover;
-      background-position: center;
+        radial-gradient(60% 55% at 78% 108%, rgba(203, 166, 94, 0.42) 0%, rgba(203, 166, 94, 0.08) 45%, transparent 70%),
+        radial-gradient(70% 60% at 0% 0%, rgba(26, 46, 76, 0.9) 0%, transparent 70%),
+        linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
     }
 
+    /* Grain */
+    .hero::before,
+    .calculator::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--noise);
+      opacity: 0.07;
+      mix-blend-mode: overlay;
+      pointer-events: none;
+    }
+
+    /* Rising-sun arcs behind the content */
+    .hero-arcs {
+      position: absolute;
+      right: -22%;
+      bottom: -1px;
+      width: min(1100px, 150vw);
+      max-width: none;
+      fill: none;
+      stroke: var(--brass);
+      stroke-width: 1;
+      opacity: 0.34;
+      pointer-events: none;
+      -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 92%);
+      mask-image: linear-gradient(to top, #000 10%, transparent 92%);
+    }
+
+    .hero .container { position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-7); align-items: center; }
+    .hero-grid > * { min-width: 0; }
+
+    .hero .eyebrow { color: var(--brass-bright); }
+
     .hero h1 {
-      font-size: clamp(2.25rem, 7vw, 4.25rem);
-      color: var(--white);
+      font-size: clamp(2.7rem, 9.5vw, 5.6rem);
+      line-height: 0.98;
+      letter-spacing: -0.035em;
+      color: var(--paper);
       margin-bottom: var(--space-5);
     }
 
-    .hero h1 em { font-style: normal; color: var(--gold); }
+    .hero h1 em { display: block; font-weight: 300; color: var(--brass-bright); }
 
     .hero-sub {
-      max-width: 620px;
-      margin: 0 auto var(--space-6);
-      font-size: clamp(1rem, 2.2vw, 1.2rem);
-      color: var(--text-on-navy);
+      max-width: 54ch;
+      margin-bottom: var(--space-6);
+      font-size: clamp(1.05rem, 2.2vw, 1.2rem);
+      color: var(--text-on-ink);
     }
 
-    .hero-actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-4);
-      max-width: 320px;
-      margin: 0 auto var(--space-7);
+    .hero-actions { display: flex; flex-direction: column; gap: var(--space-3); margin-bottom: var(--space-5); }
+
+    /* Rating line under the buttons */
+    .hero-rating {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2) var(--space-3);
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--text-on-ink);
+      text-decoration: none;
     }
+
+    .hero-rating strong { color: var(--paper); }
+    .hero-rating:hover span:last-child { text-decoration: underline; text-underline-offset: 3px; }
+
+    .stars { display: inline-flex; gap: 2px; color: var(--brass); }
+    .stars .icon { width: 17px; height: 17px; }
+    .stars .is-empty { opacity: 0.28; }
+
+    /* Featured client quote on glass */
+    .hero-proof { position: relative; max-width: 460px; }
+
+    .hero-quote {
+      margin: 0;
+      padding: var(--space-6);
+      background: var(--glass);
+      border: 1px solid var(--line-on-ink);
+      border-radius: var(--radius);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-quote blockquote {
+      margin: var(--space-4) 0 var(--space-5);
+      font-family: var(--font-heading);
+      font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+      font-weight: 300;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--paper);
+    }
+
+    .hero-quote .author-name { color: var(--paper); }
+    .hero-quote .author-role { color: var(--text-on-ink); }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+      padding: var(--space-2) var(--space-4);
+      background: var(--paper);
+      border-radius: var(--radius-pill);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .hero-badge .icon { width: 16px; height: 16px; color: var(--success); }
 
     /* Trust stats */
     .stats {
       display: grid;
       grid-template-columns: 1fr;
       gap: var(--space-5);
-      max-width: 820px;
-      margin: 0 auto;
+      margin-top: var(--space-7);
       padding-top: var(--space-6);
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-top: 1px solid var(--line-on-ink);
     }
 
     .stat-number {
       display: block;
       font-family: var(--font-heading);
-      font-size: clamp(2rem, 5vw, 2.75rem);
-      font-weight: 700;
-      color: var(--gold);
-      line-height: 1.1;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      color: var(--brass-bright);
+      line-height: 1.05;
       font-variant-numeric: tabular-nums;
     }
 
     .stat-label {
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: var(--text-on-navy);
+      color: var(--text-on-ink);
     }
 
     /* ==========================================================
-       5. TESTIMONIALS CAROUSEL
+       5. TRUST MARQUEE
        ========================================================== */
-    .testimonials { background: var(--white); }
+    .marquee {
+      overflow: hidden;
+      padding-block: var(--space-4);
+      background: var(--paper-2);
+      border-bottom: 1px solid var(--line);
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+      mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+    }
 
-    .carousel { position: relative; }
+    .marquee-track { display: flex; width: max-content; animation: marquee 38s linear infinite; }
+    .marquee:hover .marquee-track,
+    .marquee:focus-within .marquee-track { animation-play-state: paused; }
 
-    .carousel-viewport { overflow: hidden; }
+    .marquee-list { display: flex; flex: 0 0 auto; }
 
-    .carousel-track {
+    .marquee-list li {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-5);
+      padding-right: var(--space-5);
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-style: italic;
+      white-space: nowrap;
+      color: var(--ink);
+    }
+
+    .marquee-list li::after { content: ""; width: 6px; height: 6px; background: var(--brass); transform: rotate(45deg); }
+
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ==========================================================
+       6. SLIDERS (shared by the services rail and the reviews carousel)
+       ========================================================== */
+    .slider { --gap: var(--space-4); position: relative; }
+
+    /* Native scroll-snap track: touch, trackpad and momentum scrolling come for free */
+    .slider-track {
+      position: relative;
       display: flex;
-      transition: transform 0.6s ease;
-      touch-action: pan-y;
+      gap: var(--gap);
+      padding: var(--space-3) var(--space-1) var(--space-6);
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--space-1);
+      scrollbar-width: none;
     }
 
-    .carousel-slide {
-      flex: 0 0 calc(100% / var(--per-view));
-      padding: var(--space-3);
+    .slider-track::-webkit-scrollbar { display: none; }
+    .js .slider-track { cursor: grab; }
+    .slider-track.is-dragging { cursor: grabbing; user-select: none; }
+    .slider-track.no-snap { scroll-snap-type: none; }
+
+    .slider-slide {
+      flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+      min-width: 0;
+      scroll-snap-align: start;
     }
 
-    .testimonial-card {
+    /* Staging: cards outside the current view step back */
+    .slider-slide > * { transition: opacity 0.3s ease-out, transform 0.3s ease-out, box-shadow var(--transition); }
+    .slider-slide[aria-hidden="true"] > * { opacity: 0.5; transform: scale(0.97); }
+
+    /* Controls: arrows, dots, progress, play/pause */
+    .slider-controls { display: flex; align-items: center; gap: var(--space-3); }
+
+    .slider-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      flex: 0 0 auto;
+      background: transparent;
+      border: 1.5px solid var(--line-strong);
+      border-radius: 50%;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition),
+                  border-color var(--transition), opacity var(--transition),
+                  transform 0.35s var(--ease-spring);
+    }
+
+    .slider-btn:hover:not([disabled]) { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .slider-btn:active:not([disabled]) { transform: scale(0.92); }
+    .slider-btn[disabled] { opacity: 0.35; cursor: default; }
+
+    .slider-dots { display: flex; flex-wrap: wrap; }
+
+    /* 28px hit area around an 8px dot */
+    .slider-dot {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .slider-dot::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--line-strong);
+      border-radius: var(--radius-pill);
+      transition: width 0.15s ease-out, background-color 0.15s ease-out;
+    }
+
+    .slider-dot:hover::before { background: var(--text-muted); }
+    .slider-dot[aria-current="true"]::before { width: 22px; background: var(--brass-deep); }
+
+    .slider-progress { flex: 1; height: 2px; background: var(--line); overflow: hidden; }
+
+    .slider-progress-bar {
+      height: 100%;
+      background: var(--brass-deep);
+      transform: scaleX(var(--p, 0.2));
+      transform-origin: left;
+      transition: transform 0.15s linear;
+    }
+
+    .slider-count { font-size: 0.85rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-muted); }
+
+    .slider-toggle .icon-play,
+    .slider-toggle[aria-pressed="true"] .icon-pause { display: none; }
+    .slider-toggle[aria-pressed="true"] .icon-play { display: block; }
+
+    /* ==========================================================
+       7. SERVICES RAIL
+       ========================================================== */
+    .services-head { display: flex; flex-direction: column; gap: var(--space-5); margin-bottom: var(--space-5); }
+    .services-head .section-header { margin-bottom: 0; }
+
+    .service-card {
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-6);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* Brass rule that draws across the top on hover */
+    .service-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 3px;
+      background: var(--brass);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s var(--ease-out);
+    }
+
+    .service-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6); }
+
+    .service-num { font-family: var(--font-heading); font-size: 1.1rem; font-style: italic; color: var(--brass-deep); }
+
+    .service-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--ink);
+    }
+
+    .service-icon .icon { width: 24px; height: 24px; stroke-width: 1.5; }
+    .service-card p { color: var(--text-muted); font-size: 0.98rem; }
+
+    .service-points { display: grid; gap: var(--space-2); margin-bottom: var(--space-6); font-size: 0.94rem; }
+    .service-points li { display: flex; gap: var(--space-2); align-items: flex-start; }
+    .service-points .icon { width: 16px; height: 16px; margin-top: 5px; color: var(--brass-deep); stroke-width: 2.4; }
+
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: auto;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--line);
+      font-size: 0.94rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .service-link .icon { width: 18px; height: 18px; transition: transform 0.35s var(--ease-spring); }
+    .service-link:hover { color: var(--brass-deep); }
+    .service-link:hover .icon { transform: translateX(5px); }
+
+    /* ==========================================================
+       8. RETIREMENT CALCULATOR (range sliders)
+       ========================================================== */
+    .calculator {
+      color: var(--text-on-ink);
+      background-color: var(--ink);
+      background-image:
+        radial-gradient(50% 60% at 100% 0%, rgba(203, 166, 94, 0.18) 0%, transparent 70%),
+        linear-gradient(180deg, var(--ink-2) 0%, var(--ink) 100%);
+      overflow: hidden;
+    }
+
+    .calculator .container { position: relative; }
+    .calculator h2, .calculator h3 { color: var(--paper); }
+    .calculator h2 em { color: var(--brass-bright); }
+    .calculator .eyebrow { color: var(--brass-bright); }
+    .calculator .section-header p { color: var(--text-on-ink); }
+
+    .calc-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
+    .calc-grid > * { min-width: 0; }
+
+    .calc-panel {
+      padding: var(--space-6);
+      background: var(--glass);
+      border: 1px solid var(--line-on-ink);
+      border-radius: var(--radius);
+    }
+
+    .calc-fields { display: grid; gap: var(--space-5); }
+    .calc-field-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-1); }
+    .calc-field label { font-size: 0.92rem; font-weight: 500; color: var(--text-on-ink); }
+
+    .calc-field output {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      color: var(--paper);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Range input: filled track driven by --fill (set from JS) */
+    .range {
+      --fill: 50%;
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+      width: 100%;
+      height: 32px;
+      margin: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .range::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(to right, var(--brass) var(--fill), var(--line-on-ink) var(--fill));
+    }
+
+    .range::-moz-range-track { height: 6px; border-radius: var(--radius-pill); background: var(--line-on-ink); }
+    .range::-moz-range-progress { height: 6px; border-radius: var(--radius-pill); background: var(--brass); }
+
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      margin-top: -9px;
+      background: var(--paper);
+      border: 3px solid var(--brass);
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.25s var(--ease-spring), box-shadow var(--transition);
+    }
+
+    .range::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: var(--paper);
+      border: 3px solid var(--brass);
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.25s var(--ease-spring), box-shadow var(--transition);
+    }
+
+    .range:hover::-webkit-slider-thumb, .range:active::-webkit-slider-thumb { transform: scale(1.15); }
+    .range:hover::-moz-range-thumb, .range:active::-moz-range-thumb { transform: scale(1.15); }
+
+    .range:focus-visible { outline: none; }
+    .range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 5px rgba(203, 166, 94, 0.4); }
+    .range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 5px rgba(203, 166, 94, 0.4); }
+
+    /* Result panel */
+    .calc-result { display: flex; flex-direction: column; background: rgba(203, 166, 94, 0.08); border-color: rgba(203, 166, 94, 0.3); }
+
+    .calc-kicker { margin: 0; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass-bright); }
+
+    .calc-total {
+      margin: var(--space-2) 0 var(--space-4);
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 9vw, 4.6rem);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: var(--paper);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .calc-chart { width: 100%; height: 150px; margin-bottom: var(--space-5); overflow: visible; }
+    .calc-chart-area { fill: rgba(203, 166, 94, 0.18); }
+    .calc-chart-line { fill: none; stroke: var(--brass); stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+    .calc-chart-base { fill: none; stroke: var(--text-on-ink); stroke-width: 1.5; stroke-dasharray: 4 5; vector-effect: non-scaling-stroke; opacity: 0.7; }
+
+    /* Contributions vs growth */
+    .calc-split { display: flex; height: 8px; margin-bottom: var(--space-4); border-radius: var(--radius-pill); overflow: hidden; background: var(--line-on-ink); }
+    .calc-split span { flex: 1 1 0; min-width: 2px; transition: flex-grow 0.3s var(--ease-out); }
+    .calc-split-in { background: var(--text-on-ink); }
+    .calc-split-growth { background: var(--brass); }
+
+    .calc-legend { display: grid; gap: var(--space-2); margin-bottom: var(--space-5); font-size: 0.94rem; }
+    .calc-legend li { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+    .calc-legend span { display: inline-flex; align-items: center; gap: var(--space-2); }
+    .calc-legend span::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--text-on-ink); }
+    .calc-legend li:last-child span::before { background: var(--brass); }
+    .calc-legend strong { color: var(--paper); font-variant-numeric: tabular-nums; }
+
+    .calc-note { margin: var(--space-5) 0 0; font-size: 0.8rem; line-height: 1.5; color: var(--text-on-ink); opacity: 0.85; }
+    .calc-result .btn { margin-top: auto; }
+
+    /* ==========================================================
+       9. REVIEWS: SUMMARY, CASE STUDY, CAROUSEL
+       ========================================================== */
+    .proof-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-5); margin-bottom: var(--space-6); }
+    .proof-grid > * { min-width: 0; }
+
+    .proof-card {
+      padding: var(--space-6);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* Rating summary */
+    .rating-head { display: flex; align-items: center; gap: var(--space-5); margin-bottom: var(--space-5); }
+
+    .rating-score {
+      font-family: var(--font-heading);
+      font-size: 4.5rem;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+    }
+
+    .rating-head .stars { color: var(--brass-deep); }
+    .rating-head p { margin: var(--space-1) 0 0; font-size: 0.92rem; color: var(--text-muted); }
+
+    .rating-rows { display: grid; gap: var(--space-2); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+    .rating-row { display: grid; grid-template-columns: 3.4em 1fr 2.4em; align-items: center; gap: var(--space-3); }
+    .rating-row > span:last-child { text-align: right; color: var(--text-muted); }
+
+    .rating-bar { height: 8px; background: var(--paper-2); border-radius: var(--radius-pill); overflow: hidden; }
+
+    .rating-fill {
+      display: block;
+      height: 100%;
+      min-width: 3px;
+      width: calc(var(--w) * 100%);
+      background: var(--brass-deep);
+      border-radius: inherit;
+      transform-origin: left;
+    }
+
+    .js .fade-in .rating-fill { transform: scaleX(0); transition: transform 1.1s var(--ease-out) 0.3s; }
+    .js .fade-in.is-visible .rating-fill { transform: none; }
+
+    .rating-row[data-stars="5"] .rating-fill { --w: 0.84; }
+    .rating-row[data-stars="4"] .rating-fill { --w: 0.12; }
+    .rating-row[data-stars="3"] .rating-fill { --w: 0.03; }
+    .rating-row[data-stars="2"] .rating-fill { --w: 0.006; }
+    .rating-row[data-stars="1"] .rating-fill { --w: 0.003; }
+
+    .proof-note { margin: var(--space-5) 0 0; font-size: 0.85rem; color: var(--text-muted); }
+
+    /* Case study: before / after */
+    .case-card { background: var(--ink); border-color: var(--ink); color: var(--text-on-ink); }
+    .case-card .eyebrow { color: var(--brass-bright); }
+    .case-card h3 { color: var(--paper); font-size: 1.6rem; font-weight: 300; }
+    .case-card h3 em { color: var(--brass-bright); }
+
+    .case-table { width: 100%; margin-top: var(--space-5); border-collapse: collapse; font-size: 0.94rem; }
+    .case-table th, .case-table td { padding: var(--space-3) 0; border-top: 1px solid var(--line-on-ink); text-align: left; vertical-align: baseline; }
+    .case-table thead th { border-top: 0; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-on-ink); }
+    .case-table tbody th { font-weight: 400; padding-right: var(--space-3); }
+    .case-table td { padding-right: var(--space-3); font-variant-numeric: tabular-nums; }
+    .case-table td:last-child { padding-right: 0; font-family: var(--font-heading); font-size: 1.2rem; color: var(--brass-bright); white-space: nowrap; }
+    .case-card .proof-note { color: var(--text-on-ink); opacity: 0.85; }
+
+    /* Review cards */
+    .review-card {
       height: 100%;
       display: flex;
       flex-direction: column;
       margin: 0;
       padding: var(--space-6);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-top: 4px solid var(--gold);
+      background: var(--card);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      transition: transform var(--transition), box-shadow var(--transition);
     }
 
-    .testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .review-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+    .review-card .stars { color: var(--brass-deep); margin-bottom: var(--space-4); }
 
-    .stars { display: flex; gap: 2px; margin-bottom: var(--space-4); color: var(--gold); }
-    .stars svg { width: 20px; height: 20px; fill: currentColor; }
+    /* The doubt each client arrived with */
+    .review-worry { margin: 0 0 var(--space-3); font-family: var(--font-heading); font-size: 1.3rem; font-style: italic; line-height: 1.25; color: var(--ink); }
 
-    .testimonial-card blockquote {
-      flex: 1;
-      margin: 0 0 var(--space-5);
-      font-size: 1rem;
-      color: var(--text);
+    .review-worry span {
+      display: block;
+      margin-bottom: var(--space-1);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-style: normal;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brass-deep);
     }
 
-    .testimonial-author { display: flex; align-items: center; gap: var(--space-4); }
+    .review-card blockquote { flex: 1; margin: 0 0 var(--space-5); font-size: 0.98rem; color: var(--text); }
+    .review-card blockquote p { margin: 0; }
+    .review-card blockquote strong { font-weight: 600; background: linear-gradient(transparent 62%, rgba(203, 166, 94, 0.35) 62%); }
 
-    .testimonial-author img {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--gold);
-      background: var(--border);
-    }
+    .review-author { display: flex; align-items: center; gap: var(--space-3); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+    .hero-quote .review-author { border-color: var(--line-on-ink); }
 
-    .author-name { display: block; font-weight: 600; color: var(--navy); }
-    .author-role { display: block; font-size: 0.875rem; color: var(--text-muted); }
-
-    /* Controls: arrows + dots */
-    .carousel-controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-5);
-      margin-top: var(--space-5);
-    }
-
-    .carousel-arrow {
+    /* Initials monogram (no third-party avatar images) */
+    .avatar {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 44px;
-      height: 44px;
-      background: var(--white);
-      border: 1px solid var(--border);
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      background: var(--ink);
       border-radius: 50%;
-      color: var(--navy);
-      cursor: pointer;
-      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: var(--brass-bright);
     }
 
-    .carousel-arrow:hover { background: var(--navy); border-color: var(--navy); color: var(--white); }
-    .carousel-arrow svg { width: 20px; height: 20px; }
+    .hero-quote .avatar { background: var(--brass); color: var(--ink); }
 
-    .carousel-dots { display: flex; gap: var(--space-2); }
+    .author-name { display: block; font-weight: 600; color: var(--ink); line-height: 1.3; }
+    .author-role { display: block; font-size: 0.84rem; color: var(--text-muted); }
 
-    .carousel-dot {
-      width: 12px;
-      height: 12px;
-      padding: 0;
-      background: var(--border);
-      border: 0;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background var(--transition), transform var(--transition);
+    .reviews-controls { justify-content: center; margin-top: var(--space-2); }
+
+    .reviews-disclosure {
+      max-width: 78ch;
+      margin: var(--space-6) auto 0;
+      padding: var(--space-4) var(--space-5);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
 
-    .carousel-dot:hover { background: var(--text-muted); }
-    .carousel-dot[aria-current="true"] { background: var(--gold); transform: scale(1.25); }
+    .reviews-disclosure strong { color: var(--text); }
 
     /* ==========================================================
-       6. ENQUIRY / CONTACT
+       10. ENQUIRY / CONTACT
        ========================================================== */
-    .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-6); }
+    .contact { background: var(--paper-2); border-top: 1px solid var(--line); }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-5); }
     .contact-grid > * { min-width: 0; } /* let columns shrink below their content width */
 
-    /* Left column: contact info */
+    /* Left column: contact info + reassurance */
     .contact-info {
       padding: var(--space-6);
-      background: var(--navy);
-      color: var(--text-on-navy);
+      background: var(--ink);
+      color: var(--text-on-ink);
       border-radius: var(--radius);
     }
 
-    .contact-info h3 { color: var(--white); font-size: 1.5rem; }
+    .contact-info h3 { color: var(--paper); }
 
-    .contact-list { margin-top: var(--space-5); display: grid; gap: var(--space-5); }
+    .contact-list { margin-top: var(--space-5); display: grid; gap: var(--space-4); font-size: 0.96rem; }
     .contact-list li { display: flex; gap: var(--space-4); align-items: flex-start; }
     .contact-list li > span:last-child { min-width: 0; overflow-wrap: anywhere; }
 
     .contact-icon {
-      flex: 0 0 44px;
-      height: 44px;
+      flex: 0 0 42px;
+      height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: rgba(201, 162, 39, 0.15);
+      border: 1px solid var(--line-on-ink);
       border-radius: 50%;
-      color: var(--gold);
+      color: var(--brass-bright);
     }
 
-    .contact-icon svg { width: 20px; height: 20px; }
-    .contact-list strong { display: block; color: var(--white); font-weight: 600; }
+    .contact-icon .icon { width: 18px; height: 18px; }
+    .contact-list strong { display: block; color: var(--paper); font-weight: 600; }
     .contact-list a { text-decoration: none; transition: color var(--transition); }
-    .contact-list a:hover { color: var(--gold); }
+    .contact-list a:hover { color: var(--brass-bright); }
+
+    .assurances { display: grid; gap: var(--space-2); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--line-on-ink); font-size: 0.94rem; }
+    .assurances li { display: flex; gap: var(--space-3); align-items: flex-start; }
+    .assurances .icon { width: 18px; height: 18px; margin-top: 3px; color: var(--brass-bright); stroke-width: 2.2; }
 
     /* Right column: form */
     .form-card {
       padding: var(--space-6);
-      background: var(--white);
-      border: 1px solid var(--border);
+      background: var(--card);
+      border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
@@ -481,9 +1042,9 @@
       display: block;
       margin-bottom: var(--space-2);
       padding: 0;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      color: var(--navy);
+      color: var(--ink);
     }
 
     .required { color: var(--error); }
@@ -495,11 +1056,11 @@
     .form-field textarea,
     .newsletter-form input {
       width: 100%;
-      padding: 0.75rem 0.9rem;
-      background: var(--white);
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      transition: border-color var(--transition), box-shadow var(--transition);
+      padding: 0.8rem 0.95rem;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
     }
 
     .form-field textarea { min-height: 120px; resize: vertical; }
@@ -508,8 +1069,9 @@
     .form-field select:focus,
     .form-field textarea:focus {
       outline: none;
-      border-color: var(--navy);
-      box-shadow: 0 0 0 3px rgba(11, 37, 69, 0.15);
+      background: var(--card);
+      border-color: var(--ink);
+      box-shadow: 0 0 0 4px rgba(203, 166, 94, 0.3);
     }
 
     fieldset.form-field { margin: 0; padding: 0; border: 0; min-width: 0; }
@@ -517,11 +1079,12 @@
     .radio-group { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); }
 
     .radio-group label,
-    .checkbox-label {
+    .form-field .checkbox-label {
       display: inline-flex;
       align-items: flex-start;
       gap: var(--space-2);
       margin: 0;
+      font-size: 0.96rem;
       font-weight: 400;
       color: var(--text);
       cursor: pointer;
@@ -531,23 +1094,23 @@
     .checkbox-label input {
       width: 18px;
       height: 18px;
-      margin: 3px 0 0;
+      margin: 4px 0 0;
       flex: 0 0 auto;
-      accent-color: var(--navy);
+      accent-color: var(--ink);
     }
 
     /* Invalid state: red border + inline message */
     .form-field .is-invalid,
     .newsletter-form .is-invalid {
       border-color: var(--error) !important;
-      box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.12);
+      box-shadow: 0 0 0 3px rgba(179, 50, 31, 0.12);
     }
 
     .radio-group.is-invalid,
     .checkbox-label.is-invalid {
       padding: var(--space-2);
       border: 1.5px solid var(--error);
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
     }
 
     .field-error {
@@ -559,15 +1122,23 @@
 
     .field-error:empty { display: none; }
 
+    .field-hint { margin: var(--space-1) 0 0; font-size: 0.8rem; color: var(--text-muted); text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Honeypot: off-screen field that only bots fill in */
+    .hp-field { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
     .btn-submit { width: 100%; }
+
+    .form-privacy { display: flex; gap: var(--space-2); align-items: flex-start; margin: 0; font-size: 0.82rem; color: var(--text-muted); }
+    .form-privacy .icon { width: 16px; height: 16px; margin-top: 3px; }
 
     /* Loading spinner inside the submit button */
     .spinner {
       display: none;
       width: 18px;
       height: 18px;
-      border: 2.5px solid rgba(7, 26, 51, 0.3);
-      border-top-color: var(--navy-dark);
+      border: 2.5px solid rgba(246, 241, 231, 0.3);
+      border-top-color: var(--paper);
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
     }
@@ -587,18 +1158,18 @@
       width: 72px;
       height: 72px;
       margin-bottom: var(--space-5);
-      background: rgba(30, 126, 74, 0.12);
+      background: rgba(31, 122, 77, 0.12);
       border-radius: 50%;
       color: var(--success);
     }
 
-    .form-success .success-icon svg { width: 36px; height: 36px; }
+    .form-success .success-icon .icon { width: 36px; height: 36px; stroke-width: 2.5; }
     .form-success p { color: var(--text-muted); margin: 0; }
 
     /* ==========================================================
-       7. FOOTER
+       11. FOOTER
        ========================================================== */
-    .site-footer { background: var(--navy); color: var(--text-on-navy); }
+    .site-footer { background: var(--ink); color: var(--text-on-ink); font-size: 0.95rem; }
 
     .footer-grid {
       display: grid;
@@ -609,14 +1180,14 @@
 
     .site-footer h3 {
       font-family: var(--font-body);
-      font-size: 0.95rem;
+      font-size: 0.76rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--white);
+      color: var(--brass-bright);
     }
 
-    .footer-about p { margin-top: var(--space-4); font-size: 0.95rem; }
+    .footer-about p { margin-top: var(--space-4); max-width: 38ch; }
 
     .footer-links li { margin-bottom: var(--space-2); }
 
@@ -625,16 +1196,16 @@
       transition: color var(--transition), padding-left var(--transition);
     }
 
-    .footer-links a:hover { color: var(--gold); padding-left: 4px; }
+    .footer-links a:hover { color: var(--brass-bright); padding-left: 4px; }
 
     /* Newsletter */
     .newsletter-form { display: flex; gap: var(--space-2); margin-top: var(--space-3); }
-    .newsletter-form input { flex: 1; min-width: 0; border-color: transparent; color: var(--text); }
-    .newsletter-form .btn { padding: 0.75rem 1rem; }
+    .newsletter-form input { flex: 1; min-width: 0; border-color: transparent; border-radius: var(--radius-pill); color: var(--text); }
+    .newsletter-form .btn { padding: 0.75rem 1.1rem; }
 
     .newsletter-message { margin: var(--space-2) 0 0; font-size: 0.85rem; }
     .newsletter-message:empty { display: none; }
-    .newsletter-message.is-error { color: #FF9C8F; }
+    .newsletter-message.is-error { color: #FFA797; }
     .newsletter-message.is-success { color: #8FE0B0; }
 
     /* Social icons */
@@ -644,18 +1215,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line-on-ink);
       border-radius: 50%;
       transition: background var(--transition), color var(--transition),
-                  border-color var(--transition), transform var(--transition);
+                  border-color var(--transition), transform 0.35s var(--ease-spring);
     }
 
     .social-links a:hover {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--navy-dark);
+      background: var(--brass);
+      border-color: var(--brass);
+      color: var(--ink);
       transform: translateY(-3px);
     }
 
@@ -664,16 +1235,16 @@
     /* Bottom bar */
     .footer-bottom {
       padding-block: var(--space-5);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 0.85rem;
+      border-top: 1px solid var(--line-on-ink);
+      font-size: 0.82rem;
       text-align: center;
     }
 
     .footer-bottom p { margin: 0; }
-    .footer-bottom .disclaimer { margin-top: var(--space-2); opacity: 0.75; }
+    .footer-bottom .disclaimer { margin-top: var(--space-2); opacity: 0.8; }
 
     /* ==========================================================
-       8. BACK TO TOP BUTTON
+       12. BACK TO TOP BUTTON
        ========================================================== */
     .back-to-top {
       position: fixed;
@@ -685,27 +1256,32 @@
       justify-content: center;
       width: 48px;
       height: 48px;
-      background: var(--gold);
+      background: var(--brass);
       border: 0;
       border-radius: 50%;
-      color: var(--navy-dark);
+      color: var(--ink);
       box-shadow: var(--shadow-hover);
       cursor: pointer;
       opacity: 0;
       visibility: hidden;
       transform: translateY(12px);
-      transition: opacity var(--transition), transform var(--transition),
+      transition: opacity var(--transition), transform 0.35s var(--ease-spring),
                   visibility var(--transition), background var(--transition);
     }
 
     .back-to-top.is-visible { opacity: 1; visibility: visible; transform: none; }
-    .back-to-top:hover { background: var(--gold-dark); color: var(--white); }
-    .back-to-top svg { width: 22px; height: 22px; }
+    .back-to-top:hover { background: var(--brass-bright); }
+    .back-to-top .icon { width: 22px; height: 22px; stroke-width: 2.4; }
 
     /* ==========================================================
-       9. BREAKPOINT: TABLET (>= 768px)
+       13. BREAKPOINT: TABLET (>= 768px)
        ========================================================== */
     @media (min-width: 768px) {
+      :root { --per-view: 2; }
+
+      .section { padding-block: var(--space-9); }
+      .slider { --gap: var(--space-5); }
+
       /* Nav: inline links, no hamburger */
       .nav-toggle { display: none; }
 
@@ -713,34 +1289,44 @@
         position: static;
         display: flex;
         flex-direction: row;
-        gap: var(--space-6);
+        align-items: center;
+        gap: var(--space-5);
         padding: 0;
         background: transparent;
         border: 0;
         box-shadow: none;
       }
 
-      .nav-menu a { position: relative; padding: var(--space-2) 0; }
+      .nav-menu a:not(.btn) { position: relative; padding: var(--space-2) 0; }
 
-      /* Animated gold underline on hover */
-      .nav-menu a::after {
+      /* Animated brass underline on hover and for the section in view */
+      .nav-menu a:not(.btn)::after {
         content: "";
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
-        height: 2px;
-        background: var(--gold);
+        height: 1.5px;
+        background: var(--brass);
         transform: scaleX(0);
         transform-origin: left;
-        transition: transform var(--transition);
+        transition: transform 0.4s var(--ease-out);
       }
 
-      .nav-menu a:hover::after { transform: scaleX(1); }
+      .nav-menu a:not(.btn):hover::after,
+      .nav-menu a[aria-current="location"]::after { transform: scaleX(1); }
+
+      .nav-menu .btn { margin-top: 0; }
 
       /* Hero */
-      .hero-actions { flex-direction: row; justify-content: center; max-width: none; }
+      .hero-actions { flex-direction: row; flex-wrap: wrap; }
       .stats { grid-template-columns: repeat(3, 1fr); }
+
+      /* Services: title left, arrows right */
+      .services-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+
+      /* Reviews */
+      .proof-grid { grid-template-columns: 1fr 1fr; }
 
       /* Form: pair up short fields */
       .form-grid { grid-template-columns: 1fr 1fr; }
@@ -753,40 +1339,91 @@
     }
 
     /* ==========================================================
-       10. BREAKPOINT: DESKTOP (>= 1024px)
+       14. BREAKPOINT: DESKTOP (>= 1024px)
        ========================================================== */
     @media (min-width: 1024px) {
-      :root { --per-view: 3; --nav-h: 76px; }
+      :root { --per-view: 3; --nav-h: 78px; }
 
-      .logo { font-size: 1.5rem; }
+      .logo { font-size: 1.35rem; }
+      .nav-menu { gap: var(--space-6); }
+
+      /* Hero: copy left, featured quote right */
+      .hero-grid { grid-template-columns: 1.15fr 0.85fr; gap: var(--space-8); }
+      .hero-proof { justify-self: end; animation: float 9s ease-in-out infinite; }
+      .hero-arcs { right: -12%; }
+
+      /* Calculator: sliders left, result right */
+      .calc-grid { grid-template-columns: 1fr 1fr; }
+      .calc-panel { padding: var(--space-7); }
+
+      /* Reviews: summary narrower than the case study */
+      .proof-grid { grid-template-columns: 2fr 3fr; }
 
       /* Contact: info left, form right */
       .contact-grid { grid-template-columns: 2fr 3fr; align-items: start; }
       .contact-info { position: sticky; top: calc(var(--nav-h) + var(--space-5)); }
+      .form-card { padding: var(--space-7); }
 
       /* Footer: 4 columns */
       .footer-grid { grid-template-columns: 1.5fr 1fr 1fr 1.5fr; }
     }
 
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
     /* ==========================================================
-       11. REDUCED MOTION
+       15. REDUCED MOTION
        ========================================================== */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .js .fade-in { opacity: 1; transform: none; transition: none; }
-      .carousel-track { transition: none; }
-      .btn:hover, .testimonial-card:hover, .social-links a:hover { transform: none; }
+      .js .fade-in .rating-fill { transform: none; transition: none; }
+      .marquee-track, .hero-proof { animation: none; }
+      .slider-slide > *, .slider-progress-bar, .calc-split span { transition: none; }
+      .slider-slide[aria-hidden="true"] > * { transform: none; }
+      .btn:hover, .btn:hover .icon, .service-card:hover, .review-card:hover,
+      .social-links a:hover, .service-link:hover .icon { transform: none; }
     }
   </style>
 </head>
 <body>
 
   <!-- ==========================================================
+       ICON SPRITE (referenced with <use href="#i-...">)
+       ========================================================== -->
+  <svg width="0" height="0" class="visually-hidden" aria-hidden="true" focusable="false">
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+    <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.800-1-8-4.500-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.920v3a2 2 0 01-2.180 2 19.800 19.800 0 01-8.630-3.070 19.500 19.500 0 01-6-6A19.800 19.800 0 012.120 4.180 2 2 0 014.110 2h3a2 2 0 012 1.720c.130.960.360 1.900.700 2.810a2 2 0 01-.450 2.110L8.090 9.910a16 16 0 006 6l1.270-1.270a2 2 0 012.110-.450c.910.340 1.850.570 2.810.700A2 2 0 0122 16.920z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-sunrise" viewBox="0 0 24 24"><path d="M3 18h18M6 18a6 6 0 0112 0M12 4v4M4.500 10.500l2 2M19.500 10.500l-2 2M9 21h6"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></symbol>
+    <symbol id="i-umbrella" viewBox="0 0 24 24"><path d="M12 3a9 9 0 019 9H3a9 9 0 019-9zM12 12v7a2 2 0 01-4 0M12 2v1"/></symbol>
+    <symbol id="i-scroll" viewBox="0 0 24 24"><path d="M6 3h11a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V4"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2V3z"/><path d="M9 14l6-6M9.500 8.500h.010M14.500 13.500h.010"/></symbol>
+  </svg>
+
+  <!-- ==========================================================
        HEADER / STICKY NAVIGATION
        ========================================================== -->
-  <header class="site-header">
+  <header class="site-header" id="site-header">
     <div class="container nav-bar">
-      <a href="#home" class="logo" aria-label="Horizon Wealth Planning, home">Horizon <span>Wealth</span> Planning</a>
+      <a href="#home" class="logo" aria-label="Horizon Wealth Planning, home">
+        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 22h26M8 22a8 8 0 0116 0M12.500 22a3.500 3.500 0 017 0M16 6v3M6.500 10.500l2 2M25.500 10.500l-2 2M9 27h14"/></svg>
+        <span>Horizon <em>Wealth</em></span>
+      </a>
 
       <button class="nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="primary-nav">
         <span></span><span></span><span></span>
@@ -794,12 +1431,15 @@
 
       <nav aria-label="Primary">
         <ul class="nav-menu" id="primary-nav">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#services">Services</a></li>
+          <li class="js-only"><a href="#calculator">Calculator</a></li>
+          <li><a href="#testimonials">Reviews</a></li>
           <li><a href="#contact">Contact</a></li>
+          <li><a href="#contact" class="btn btn-brass">Book a consultation</a></li>
         </ul>
       </nav>
     </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
   </header>
 
   <main>
@@ -808,15 +1448,59 @@
          1. HERO SECTION
          ========================================================== -->
     <section class="hero" id="home" aria-labelledby="hero-title">
-      <div class="container">
-        <h1 id="hero-title" class="fade-in">Plan Today. <em>Prosper Tomorrow.</em></h1>
-        <p class="hero-sub fade-in">
-          Personalised retirement, investment and insurance planning designed around your goals, so you can face every stage of life with confidence.
-        </p>
+      <svg class="hero-arcs" viewBox="0 0 1000 620" aria-hidden="true" focusable="false">
+        <circle cx="500" cy="620" r="120"/><circle cx="500" cy="620" r="190"/><circle cx="500" cy="620" r="260"/>
+        <circle cx="500" cy="620" r="330"/><circle cx="500" cy="620" r="400"/><circle cx="500" cy="620" r="470"/>
+        <circle cx="500" cy="620" r="540"/><circle cx="500" cy="620" r="610"/>
+      </svg>
 
-        <div class="hero-actions fade-in">
-          <a href="#contact" class="btn btn-gold">Book a Free Consultation</a>
-          <a href="#testimonials" class="btn btn-outline">Learn More</a>
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow fade-in">Independent &middot; Fee-only &middot; Sydney</p>
+            <h1 id="hero-title" class="fade-in" data-delay="1">Plan Today. <em>Prosper Tomorrow.</em></h1>
+            <p class="hero-sub fade-in" data-delay="2">
+              Personalised retirement, investment and insurance planning designed around your goals, so you can face every stage of life with confidence.
+            </p>
+
+            <div class="hero-actions fade-in" data-delay="3">
+              <a href="#contact" class="btn btn-brass">Book a Free Consultation <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              <a href="#calculator" class="btn btn-ghost js-only">Try the retirement calculator</a>
+            </div>
+
+            <a href="#testimonials" class="hero-rating fade-in" data-delay="4">
+              <span class="stars" aria-hidden="true">
+                <svg class="icon icon-fill"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill"><use href="#i-star"/></svg>
+              </span>
+              <span><strong>4.8 out of 5</strong> from 312 client reviews</span>
+            </a>
+          </div>
+
+          <!-- Featured client quote -->
+          <div class="hero-proof fade-in" data-delay="3">
+            <figure class="hero-quote">
+              <span class="stars" role="img" aria-label="5 out of 5 stars">
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+              </span>
+              <blockquote>"For the first time I have a retirement date I can actually plan around."</blockquote>
+              <figcaption class="review-author">
+                <span class="avatar" aria-hidden="true">ST</span>
+                <span>
+                  <span class="author-name">Sarah T.</span>
+                  <span class="author-role">Secondary school teacher &middot; Client since 2019</span>
+                </span>
+              </figcaption>
+            </figure>
+            <p class="hero-badge"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg> Fixed fees, quoted before you commit</p>
+          </div>
         </div>
 
         <!-- Trust stats: numbers count up when scrolled into view -->
@@ -838,143 +1522,458 @@
     </section>
 
     <!-- ==========================================================
-         2. TESTIMONIAL SECTION
+         2. TRUST MARQUEE (second list is a visual duplicate for the loop)
          ========================================================== -->
-    <section class="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
+    <div class="marquee" aria-label="How we work">
+      <div class="marquee-track">
+        <ul class="marquee-list">
+          <li>Fee-only advice</li>
+          <li>No product commissions</li>
+          <li>Every fee in writing</li>
+          <li>Plain-English plans</li>
+          <li>Quarterly check-ins</li>
+          <li>Independently owned</li>
+        </ul>
+        <ul class="marquee-list" aria-hidden="true">
+          <li>Fee-only advice</li>
+          <li>No product commissions</li>
+          <li>Every fee in writing</li>
+          <li>Plain-English plans</li>
+          <li>Quarterly check-ins</li>
+          <li>Independently owned</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         3. SERVICES RAIL
+         ========================================================== -->
+    <section class="section" id="services" aria-labelledby="services-title">
       <div class="container">
-        <div class="section-header fade-in">
-          <h2 id="testimonials-title">What Our Clients Say</h2>
-          <p>Real stories from people who trusted us with their financial future.</p>
-        </div>
-
-        <div class="carousel fade-in" id="carousel" role="region" aria-roledescription="carousel" aria-label="Client testimonials" tabindex="0">
-          <div class="carousel-viewport">
-            <div class="carousel-track" id="carousel-track" aria-live="off">
-
-              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="1 of 5">
-                <figure class="testimonial-card">
-                  <div class="stars" role="img" aria-label="5 out of 5 stars">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  </div>
-                  <blockquote>"Horizon gave us a clear retirement roadmap for the first time. We finally know exactly when we can stop working, and what it will take to get there."</blockquote>
-                  <figcaption class="testimonial-author">
-                    <img src="https://i.pravatar.cc/112?img=47" alt="Portrait of Sarah Tan" width="56" height="56" loading="lazy">
-                    <span>
-                      <span class="author-name">Sarah Tan</span>
-                      <span class="author-role">Secondary School Teacher</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="2 of 5">
-                <figure class="testimonial-card">
-                  <div class="stars" role="img" aria-label="5 out of 5 stars">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  </div>
-                  <blockquote>"As a business owner my finances were all over the place. The team untangled everything and built an investment plan that actually fits my cash flow."</blockquote>
-                  <figcaption class="testimonial-author">
-                    <img src="https://i.pravatar.cc/112?img=12" alt="Portrait of David Morgan" width="56" height="56" loading="lazy">
-                    <span>
-                      <span class="author-name">David Morgan</span>
-                      <span class="author-role">Restaurant Owner</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="3 of 5">
-                <figure class="testimonial-card">
-                  <div class="stars" role="img" aria-label="5 out of 5 stars">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  </div>
-                  <blockquote>"They explained our insurance options in plain language and never pushed a product. We ended up with better cover for less than we were paying before."</blockquote>
-                  <figcaption class="testimonial-author">
-                    <img src="https://i.pravatar.cc/112?img=32" alt="Portrait of Priya Nair" width="56" height="56" loading="lazy">
-                    <span>
-                      <span class="author-name">Priya Nair</span>
-                      <span class="author-role">Paediatric Nurse</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="4 of 5">
-                <figure class="testimonial-card">
-                  <div class="stars" role="img" aria-label="5 out of 5 stars">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  </div>
-                  <blockquote>"Estate planning felt overwhelming until we sat down with Horizon. Everything is now documented, organised and our children know the plan."</blockquote>
-                  <figcaption class="testimonial-author">
-                    <img src="https://i.pravatar.cc/112?img=60" alt="Portrait of Robert Lim" width="56" height="56" loading="lazy">
-                    <span>
-                      <span class="author-name">Robert Lim</span>
-                      <span class="author-role">Retired Civil Engineer</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div class="carousel-slide" role="group" aria-roledescription="slide" aria-label="5 of 5">
-                <figure class="testimonial-card">
-                  <div class="stars" role="img" aria-label="5 out of 5 stars">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  </div>
-                  <blockquote>"I started investing in my late twenties with no idea what I was doing. My adviser set realistic targets and checks in every quarter. Highly recommended."</blockquote>
-                  <figcaption class="testimonial-author">
-                    <img src="https://i.pravatar.cc/112?img=5" alt="Portrait of Emily Carter" width="56" height="56" loading="lazy">
-                    <span>
-                      <span class="author-name">Emily Carter</span>
-                      <span class="author-role">Software Engineer</span>
-                    </span>
-                  </figcaption>
-                </figure>
-              </div>
-
+        <div class="slider" id="services-slider" role="region" aria-roledescription="carousel" aria-label="Our services">
+          <div class="services-head">
+            <div class="section-header fade-in">
+              <p class="eyebrow">What we do</p>
+              <h2 id="services-title">Advice for every stage of <em>your</em> life</h2>
+              <p>Five areas of planning, one adviser who knows your whole picture. Swipe, drag or use the arrows to explore.</p>
+            </div>
+            <div class="slider-controls js-only fade-in">
+              <span class="slider-count" aria-hidden="true"></span>
+              <button class="slider-btn" type="button" data-slider-prev aria-label="Previous services" aria-controls="services-track">
+                <svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+              </button>
+              <button class="slider-btn" type="button" data-slider-next aria-label="Next services" aria-controls="services-track">
+                <svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+              </button>
             </div>
           </div>
 
-          <!-- Carousel controls: previous / dots / next -->
-          <div class="carousel-controls">
-            <button class="carousel-arrow" id="carousel-prev" type="button" aria-label="Previous testimonial" aria-controls="carousel-track">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-            </button>
-            <div class="carousel-dots" id="carousel-dots" role="group" aria-label="Choose testimonial"></div>
-            <button class="carousel-arrow" id="carousel-next" type="button" aria-label="Next testimonial" aria-controls="carousel-track">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-            </button>
+          <div class="slider-track fade-in" id="services-track" tabindex="0">
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="1 of 5">
+              <article class="service-card">
+                <div class="service-top">
+                  <span class="service-num">01</span>
+                  <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-sunrise"/></svg></span>
+                </div>
+                <h3>Retirement Planning</h3>
+                <p>Know when you can stop working and what it will take to get there.</p>
+                <ul class="service-points">
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> A target date and income you can plan around</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Super consolidation and fee review</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Transition-to-retirement strategy</li>
+                </ul>
+                <a class="service-link" href="#contact" data-interest="Retirement Planning">Ask about retirement <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              </article>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="2 of 5">
+              <article class="service-card">
+                <div class="service-top">
+                  <span class="service-num">02</span>
+                  <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-chart"/></svg></span>
+                </div>
+                <h3>Investment Management</h3>
+                <p>A diversified portfolio matched to your goals, timeframe and comfort with risk.</p>
+                <ul class="service-points">
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Low-cost, evidence-based portfolios</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Automatic monthly investing</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> A review with your adviser every quarter</li>
+                </ul>
+                <a class="service-link" href="#contact" data-interest="Investment">Ask about investing <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              </article>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="3 of 5">
+              <article class="service-card">
+                <div class="service-top">
+                  <span class="service-num">03</span>
+                  <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-umbrella"/></svg></span>
+                </div>
+                <h3>Insurance Advice</h3>
+                <p>The right cover for your family, explained in plain language and never oversold.</p>
+                <ul class="service-points">
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Life, income protection and trauma cover</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> We check for cover you are paying for twice</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> No commissions on what we recommend</li>
+                </ul>
+                <a class="service-link" href="#contact" data-interest="Insurance">Ask about insurance <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              </article>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="4 of 5">
+              <article class="service-card">
+                <div class="service-top">
+                  <span class="service-num">04</span>
+                  <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-scroll"/></svg></span>
+                </div>
+                <h3>Estate Planning</h3>
+                <p>Make sure what you have built goes where you want it to, with no surprises.</p>
+                <ul class="service-points">
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Wills and powers of attorney, coordinated</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Beneficiary nominations kept up to date</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> One document your family can follow</li>
+                </ul>
+                <a class="service-link" href="#contact" data-interest="Estate Planning">Ask about estate planning <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              </article>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="5 of 5">
+              <article class="service-card">
+                <div class="service-top">
+                  <span class="service-num">05</span>
+                  <span class="service-icon"><svg class="icon" aria-hidden="true"><use href="#i-receipt"/></svg></span>
+                </div>
+                <h3>Tax Planning</h3>
+                <p>Structure your income and investments so you keep more of what you earn.</p>
+                <ul class="service-points">
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Salary sacrifice and contribution strategy</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Tax-aware investment structures</li>
+                  <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> We work alongside your accountant</li>
+                </ul>
+                <a class="service-link" href="#contact" data-interest="Tax Planning">Ask about tax planning <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+              </article>
+            </div>
+
           </div>
+
+          <div class="slider-progress js-only" aria-hidden="true"><div class="slider-progress-bar"></div></div>
         </div>
       </div>
     </section>
 
     <!-- ==========================================================
-         3. ENQUIRY FORM SECTION
+         4. RETIREMENT CALCULATOR (range sliders; needs JS)
          ========================================================== -->
-    <section class="section" id="contact" aria-labelledby="contact-title">
+    <section class="section calculator js-only" id="calculator" aria-labelledby="calculator-title">
       <div class="container">
         <div class="section-header fade-in">
-          <h2 id="contact-title">Start Your Financial Journey</h2>
+          <p class="eyebrow">Retirement calculator</p>
+          <h2 id="calculator-title">See where today's habits <em>could take you</em></h2>
+          <p>Move the sliders to see how time, savings and contributions work together. Nothing you enter here leaves your browser.</p>
+        </div>
+
+        <div class="calc-grid">
+
+          <!-- Left: inputs -->
+          <form class="calc-panel fade-in" id="calc-form" novalidate>
+            <div class="calc-fields">
+              <div class="calc-field">
+                <div class="calc-field-head">
+                  <label for="calc-age">Your age today</label>
+                  <output id="calc-age-out" for="calc-age">35</output>
+                </div>
+                <input class="range" type="range" id="calc-age" min="18" max="70" step="1" value="35">
+              </div>
+
+              <div class="calc-field">
+                <div class="calc-field-head">
+                  <label for="calc-retire">Age you would like to retire</label>
+                  <output id="calc-retire-out" for="calc-retire">65</output>
+                </div>
+                <input class="range" type="range" id="calc-retire" min="50" max="75" step="1" value="65">
+              </div>
+
+              <div class="calc-field">
+                <div class="calc-field-head">
+                  <label for="calc-savings">Savings and super so far</label>
+                  <output id="calc-savings-out" for="calc-savings">$50,000</output>
+                </div>
+                <input class="range" type="range" id="calc-savings" min="0" max="1000000" step="5000" value="50000">
+              </div>
+
+              <div class="calc-field">
+                <div class="calc-field-head">
+                  <label for="calc-monthly">Monthly contribution</label>
+                  <output id="calc-monthly-out" for="calc-monthly">$800</output>
+                </div>
+                <input class="range" type="range" id="calc-monthly" min="0" max="5000" step="50" value="800">
+              </div>
+
+              <div class="calc-field">
+                <div class="calc-field-head">
+                  <label for="calc-rate">Assumed annual return</label>
+                  <output id="calc-rate-out" for="calc-rate">5.5%</output>
+                </div>
+                <input class="range" type="range" id="calc-rate" min="2" max="9" step="0.5" value="5.5">
+              </div>
+            </div>
+          </form>
+
+          <!-- Right: projection -->
+          <div class="calc-panel calc-result fade-in" data-delay="1">
+            <p class="calc-kicker">Projected balance at <span id="calc-at-age">65</span></p>
+            <p class="calc-total" id="calc-total">$990,000</p>
+
+            <svg class="calc-chart" viewBox="0 0 320 140" preserveAspectRatio="none" role="img" aria-labelledby="calc-chart-title">
+              <title id="calc-chart-title">Projected balance compared with total contributions, year by year</title>
+              <path class="calc-chart-area" id="calc-chart-area" d=""/>
+              <path class="calc-chart-base" id="calc-chart-base" d=""/>
+              <path class="calc-chart-line" id="calc-chart-line" d=""/>
+            </svg>
+
+            <div class="calc-split" aria-hidden="true">
+              <span class="calc-split-in" id="calc-split-in"></span>
+              <span class="calc-split-growth" id="calc-split-growth"></span>
+            </div>
+
+            <ul class="calc-legend">
+              <li><span>What you put in</span> <strong id="calc-contributed">$338,000</strong></li>
+              <li><span>Estimated growth</span> <strong id="calc-growth">$652,000</strong></li>
+            </ul>
+
+            <a href="#contact" class="btn btn-brass" data-interest="Retirement Planning">Get a plan built on your real numbers <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg></a>
+
+            <p class="calc-note">Illustration only, not a forecast or financial advice. Assumes a constant return compounded monthly, before fees, tax and inflation. Real returns vary from year to year and can be negative.</p>
+            <p class="visually-hidden" id="calc-status" role="status"></p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         5. REVIEWS SECTION
+         ========================================================== -->
+    <section class="section testimonials" id="testimonials" aria-labelledby="testimonials-title">
+      <div class="container">
+        <div class="section-header fade-in">
+          <p class="eyebrow">Client reviews</p>
+          <h2 id="testimonials-title">The doubts they arrived with, <em>and what happened next</em></h2>
+          <p>Most people put off advice for the same few reasons. Here is how those worries played out for clients who had them, including the parts we could have done better.</p>
+        </div>
+
+        <div class="proof-grid">
+
+          <!-- Rating summary -->
+          <div class="proof-card fade-in" aria-labelledby="rating-title">
+            <h3 id="rating-title" class="visually-hidden">Overall rating</h3>
+            <div class="rating-head">
+              <span class="rating-score" aria-hidden="true">4.8</span>
+              <div>
+                <span class="stars" role="img" aria-label="Rated 4.8 out of 5">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p>Average of 312 client reviews</p>
+              </div>
+            </div>
+
+            <ul class="rating-rows" aria-label="Number of reviews by star rating">
+              <li class="rating-row" data-stars="5"><span>5 star</span><span class="rating-bar"><span class="rating-fill"></span></span><span>262</span></li>
+              <li class="rating-row" data-stars="4"><span>4 star</span><span class="rating-bar"><span class="rating-fill"></span></span><span>38</span></li>
+              <li class="rating-row" data-stars="3"><span>3 star</span><span class="rating-bar"><span class="rating-fill"></span></span><span>9</span></li>
+              <li class="rating-row" data-stars="2"><span>2 star</span><span class="rating-bar"><span class="rating-fill"></span></span><span>2</span></li>
+              <li class="rating-row" data-stars="1"><span>1 star</span><span class="rating-bar"><span class="rating-fill"></span></span><span>1</span></li>
+            </ul>
+
+            <p class="proof-note">Every review counts towards the average, including the critical ones. The most common complaint: onboarding paperwork takes too long. We are working on it.</p>
+          </div>
+
+          <!-- Case study: before and after -->
+          <article class="proof-card case-card fade-in" data-delay="1" aria-labelledby="case-title">
+            <p class="eyebrow">Case study</p>
+            <h3 id="case-title">Sarah, 44: three forgotten super accounts <em>to one plan</em></h3>
+            <table class="case-table">
+              <thead>
+                <tr><th scope="col"><span class="visually-hidden">Measure</span></th><th scope="col">Before</th><th scope="col">After</th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">Super accounts</th><td>3</td><td>1</td></tr>
+                <tr><th scope="row">Fees per year</th><td>$3,150</td><td>$1,250</td></tr>
+                <tr><th scope="row">Retirement date</th><td>Unknown</td><td>Age 63</td></tr>
+              </tbody>
+            </table>
+            <p class="proof-note">One client's outcome, shared with permission. Savings depend on your own funds, balances and fees, and many clients save less than this.</p>
+          </article>
+
+        </div>
+
+        <!-- Reviews carousel -->
+        <div class="slider fade-in" id="reviews-slider" role="region" aria-roledescription="carousel" aria-label="Client reviews">
+          <div class="slider-track" id="reviews-track" tabindex="0" aria-live="off">
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="1 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="5 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "I have left it too late."</p>
+                <blockquote><p>"I was 44 with three super accounts I had never looked at. Horizon merged them into one, <strong>cut my fees by about $1,900 a year</strong> and gave me a retirement date I can actually plan around: 63."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">ST</span>
+                  <span>
+                    <span class="author-name">Sarah T.</span>
+                    <span class="author-role">Secondary school teacher &middot; Client since 2019</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="2 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="5 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "Advice is for people with more money than me."</p>
+                <blockquote><p>"I nearly did not book. The fixed fee was quoted up front, and the first cash-flow review <strong>found $640 a month going to cover I had doubled up on</strong>. It paid for itself in the first quarter."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">DM</span>
+                  <span>
+                    <span class="author-name">David M.</span>
+                    <span class="author-role">Restaurant owner &middot; Client since 2021</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="3 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="5 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "I will just be sold a product."</p>
+                <blockquote><p>"They explained our insurance options in plain language and never pushed anything. We ended up with <strong>better income protection for $74 a month less</strong> than we were paying before."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">PN</span>
+                  <span>
+                    <span class="author-name">Priya N.</span>
+                    <span class="author-role">Paediatric nurse &middot; Client since 2020</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="4 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="4 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill is-empty" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "I have no idea what I am doing."</p>
+                <blockquote><p>"Honest take: <strong>the onboarding paperwork took about three weeks</strong>, longer than I had hoped. Since then it has been excellent. A clear plan, automatic monthly investing and a check-in every quarter."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">EC</span>
+                  <span>
+                    <span class="author-name">Emily C.</span>
+                    <span class="author-role">Software engineer &middot; Client since 2022</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="5 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="5 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "We will get to it next year."</p>
+                <blockquote><p>"We had been avoiding our wills for eleven years. <strong>Three meetings later everything is documented</strong>, organised in one place, and our children know exactly where to find it."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">RL</span>
+                  <span>
+                    <span class="author-name">Robert L.</span>
+                    <span class="author-role">Retired civil engineer &middot; Client since 2016</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+            <div class="slider-slide" role="group" aria-roledescription="slide" aria-label="6 of 6">
+              <figure class="review-card">
+                <span class="stars" role="img" aria-label="5 out of 5 stars">
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                  <svg class="icon icon-fill" aria-hidden="true"><use href="#i-star"/></svg>
+                </span>
+                <p class="review-worry"><span>The worry</span> "We have been burned before."</p>
+                <blockquote><p>"After a bad experience with another adviser we were wary. Horizon <strong>put every fee in writing before we signed anything</strong>, and we have not had a surprise invoice since."</p></blockquote>
+                <figcaption class="review-author">
+                  <span class="avatar" aria-hidden="true">MH</span>
+                  <span>
+                    <span class="author-name">Marcus and Jo H.</span>
+                    <span class="author-role">Small business owners &middot; Clients since 2018</span>
+                  </span>
+                </figcaption>
+              </figure>
+            </div>
+
+          </div>
+
+          <!-- Carousel controls: previous / dots / next / pause -->
+          <div class="slider-controls reviews-controls js-only">
+            <button class="slider-btn" type="button" data-slider-prev aria-label="Previous review" aria-controls="reviews-track">
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron-left"/></svg>
+            </button>
+            <div class="slider-dots" role="group" aria-label="Choose review"></div>
+            <button class="slider-btn" type="button" data-slider-next aria-label="Next review" aria-controls="reviews-track">
+              <svg class="icon" aria-hidden="true"><use href="#i-chevron-right"/></svg>
+            </button>
+            <button class="slider-btn slider-toggle" type="button" data-slider-toggle aria-pressed="false" aria-label="Pause automatic scrolling">
+              <svg class="icon icon-pause" aria-hidden="true"><use href="#i-pause"/></svg>
+              <svg class="icon icon-fill icon-play" aria-hidden="true"><use href="#i-play"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <p class="reviews-disclosure fade-in">
+          <strong>About these reviews.</strong> This is a demonstration website: the firm, the reviews and the figures shown are illustrative samples, not real clients. Reviews describe individual experiences. They are not a guarantee of future performance, and your own outcome will depend on your circumstances.
+        </p>
+      </div>
+    </section>
+
+    <!-- ==========================================================
+         6. ENQUIRY FORM SECTION
+         ========================================================== -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="section-header fade-in">
+          <p class="eyebrow">Free first consultation</p>
+          <h2 id="contact-title">Start Your <em>Financial Journey</em></h2>
           <p>Tell us a little about yourself and an adviser will be in touch within one business day.</p>
         </div>
 
@@ -987,41 +1986,39 @@
 
             <ul class="contact-list">
               <li>
-                <span class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                </span>
+                <span class="contact-icon"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg></span>
                 <span>
                   <strong>Address</strong>
                   120 Harbour Street, Level 18<br>Sydney NSW 2000
                 </span>
               </li>
               <li>
-                <span class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.8 19.8 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.8 19.8 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
-                </span>
+                <span class="contact-icon"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg></span>
                 <span>
                   <strong>Phone</strong>
                   <a href="tel:+61255501234">+61 2 5550 1234</a>
                 </span>
               </li>
               <li>
-                <span class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg>
-                </span>
+                <span class="contact-icon"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></span>
                 <span>
                   <strong>Email</strong>
                   <a href="mailto:hello@horizonwealth.example">hello@horizonwealth.example</a>
                 </span>
               </li>
               <li>
-                <span class="contact-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                </span>
+                <span class="contact-icon"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg></span>
                 <span>
                   <strong>Office Hours</strong>
                   Mon to Fri: 9:00am to 6:00pm<br>Sat: 10:00am to 1:00pm
                 </span>
               </li>
+            </ul>
+
+            <ul class="assurances" aria-label="What to expect">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> No obligation and no sales pitch</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> Fixed fee quoted before you commit</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg> A reply within one business day</li>
             </ul>
           </aside>
 
@@ -1032,19 +2029,19 @@
 
                 <div class="form-field full">
                   <label for="fullName">Full Name <span class="required" aria-hidden="true">*</span></label>
-                  <input type="text" id="fullName" name="fullName" autocomplete="name" required aria-required="true" aria-describedby="fullName-error">
+                  <input type="text" id="fullName" name="fullName" autocomplete="name" maxlength="80" required aria-required="true" aria-describedby="fullName-error">
                   <p class="field-error" id="fullName-error" role="alert"></p>
                 </div>
 
                 <div class="form-field">
                   <label for="email">Email <span class="required" aria-hidden="true">*</span></label>
-                  <input type="email" id="email" name="email" autocomplete="email" required aria-required="true" aria-describedby="email-error">
+                  <input type="email" id="email" name="email" autocomplete="email" maxlength="254" spellcheck="false" autocapitalize="off" required aria-required="true" aria-describedby="email-error">
                   <p class="field-error" id="email-error" role="alert"></p>
                 </div>
 
                 <div class="form-field">
                   <label for="phone">Phone <span class="required" aria-hidden="true">*</span></label>
-                  <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="numeric" required aria-required="true" aria-describedby="phone-error">
+                  <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" maxlength="24" required aria-required="true" aria-describedby="phone-error">
                   <p class="field-error" id="phone-error" role="alert"></p>
                 </div>
 
@@ -1087,8 +2084,15 @@
 
                 <div class="form-field full">
                   <label for="message">Message <span class="required" aria-hidden="true">*</span></label>
-                  <textarea id="message" name="message" required aria-required="true" aria-describedby="message-error" placeholder="Tell us about your goals"></textarea>
+                  <textarea id="message" name="message" maxlength="1000" required aria-required="true" aria-describedby="message-error message-hint" placeholder="Tell us about your goals"></textarea>
+                  <p class="field-hint js-only" id="message-hint"><span id="message-count">0</span> / 1000 characters</p>
                   <p class="field-error" id="message-error" role="alert"></p>
+                </div>
+
+                <!-- Honeypot: hidden from people, tempting to bots. A filled value discards the submission. -->
+                <div class="hp-field" aria-hidden="true">
+                  <label for="company">Company (leave this field empty)</label>
+                  <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
                 </div>
 
                 <div class="form-field full">
@@ -1100,11 +2104,16 @@
                 </div>
 
                 <div class="form-field full">
-                  <button type="submit" class="btn btn-gold btn-submit" id="submit-btn">
+                  <button type="submit" class="btn btn-ink btn-submit" id="submit-btn">
                     <span class="spinner" aria-hidden="true"></span>
                     <span class="btn-label">Send Enquiry</span>
                   </button>
                 </div>
+
+                <p class="form-privacy form-field full">
+                  <svg class="icon" aria-hidden="true"><use href="#i-lock"/></svg>
+                  <span>We only use your details to reply to this enquiry. Please do not include account numbers, tax file numbers or passwords.</span>
+                </p>
 
               </div>
             </form>
@@ -1117,14 +2126,17 @@
   </main>
 
   <!-- ==========================================================
-       4. FOOTER
+       7. FOOTER
        ========================================================== -->
   <footer class="site-footer">
     <div class="container footer-grid">
 
       <!-- Column 1: logo + description -->
       <div class="footer-about">
-        <a href="#home" class="logo">Horizon <span>Wealth</span> Planning</a>
+        <a href="#home" class="logo" aria-label="Horizon Wealth Planning, back to top">
+          <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 22h26M8 22a8 8 0 0116 0M12.500 22a3.500 3.500 0 017 0M16 6v3M6.500 10.500l2 2M25.500 10.500l-2 2M9 27h14"/></svg>
+          <span>Horizon <em>Wealth</em> Planning</span>
+        </a>
         <p>An independent financial planning firm helping individuals and families build, protect and pass on their wealth with clarity and confidence.</p>
       </div>
 
@@ -1133,8 +2145,9 @@
         <h3>Quick Links</h3>
         <ul class="footer-links">
           <li><a href="#home">Home</a></li>
-          <li><a href="#testimonials">Testimonials</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="#services">Services</a></li>
+          <li class="js-only"><a href="#calculator">Retirement Calculator</a></li>
+          <li><a href="#testimonials">Client Reviews</a></li>
           <li><a href="#contact">Book a Consultation</a></li>
         </ul>
       </nav>
@@ -1143,11 +2156,11 @@
       <div>
         <h3>Services</h3>
         <ul class="footer-links">
-          <li>Retirement Planning</li>
-          <li>Investment Management</li>
-          <li>Insurance Advice</li>
-          <li>Estate Planning</li>
-          <li>Tax Planning</li>
+          <li><a href="#contact" data-interest="Retirement Planning">Retirement Planning</a></li>
+          <li><a href="#contact" data-interest="Investment">Investment Management</a></li>
+          <li><a href="#contact" data-interest="Insurance">Insurance Advice</a></li>
+          <li><a href="#contact" data-interest="Estate Planning">Estate Planning</a></li>
+          <li><a href="#contact" data-interest="Tax Planning">Tax Planning</a></li>
         </ul>
       </div>
 
@@ -1157,29 +2170,29 @@
         <p>Monthly insights on markets and money, straight to your inbox.</p>
         <form class="newsletter-form" id="newsletter-form" novalidate>
           <label for="newsletter-email" class="visually-hidden">Email address</label>
-          <input type="email" id="newsletter-email" name="newsletterEmail" placeholder="Your email" autocomplete="email" aria-describedby="newsletter-message">
-          <button type="submit" class="btn btn-gold">Subscribe</button>
+          <input type="email" id="newsletter-email" name="newsletterEmail" placeholder="Your email" autocomplete="email" maxlength="254" spellcheck="false" autocapitalize="off" aria-describedby="newsletter-message">
+          <button type="submit" class="btn btn-brass">Subscribe</button>
         </form>
         <p class="newsletter-message" id="newsletter-message" role="status"></p>
 
         <ul class="social-links" aria-label="Social media">
           <li>
-            <a href="#" aria-label="Facebook">
+            <a href="#" aria-label="Facebook" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
             </a>
           </li>
           <li>
-            <a href="#" aria-label="LinkedIn">
+            <a href="#" aria-label="LinkedIn" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"/></svg>
             </a>
           </li>
           <li>
-            <a href="#" aria-label="Instagram">
+            <a href="#" aria-label="Instagram" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 00-2.13 1.38A5.9 5.9 0 00.63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13a5.9 5.9 0 002.13 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a5.9 5.9 0 002.13-1.38 5.9 5.9 0 001.38-2.13c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 00-1.38-2.13A5.9 5.9 0 0019.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-11.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg>
             </a>
           </li>
           <li>
-            <a href="#" aria-label="X (formerly Twitter)">
+            <a href="#" aria-label="X (formerly Twitter)" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64z"/></svg>
             </a>
           </li>
@@ -1198,8 +2211,17 @@
        BACK TO TOP BUTTON
        ========================================================== -->
   <button class="back-to-top" id="back-to-top" type="button" aria-label="Back to top">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 15l-6-6-6 6"/></svg>
+    <svg class="icon" aria-hidden="true"><use href="#i-chevron-up"/></svg>
   </button>
+
+  <!-- Success panel, cloned in place of the enquiry form (no innerHTML anywhere in the script) -->
+  <template id="success-template">
+    <div class="form-success" role="status" tabindex="-1">
+      <span class="success-icon"><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg></span>
+      <h3></h3>
+      <p>Your enquiry has been received. One of our advisers will contact you within one business day.</p>
+    </div>
+  </template>
 
   <script>
     (function () {
@@ -1212,13 +2234,16 @@
       var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
       /* ==========================================================
-         1. MOBILE NAV (hamburger toggle)
+         1. MOBILE NAV (hamburger toggle) + SCROLL STATE
          ========================================================== */
+      var header = document.getElementById("site-header");
       var navToggle = document.querySelector(".nav-toggle");
       var navMenu = document.getElementById("primary-nav");
+      var backToTop = document.getElementById("back-to-top");
 
       function setMenu(open) {
         navMenu.classList.toggle("is-open", open);
+        header.classList.toggle("menu-open", open);
         navToggle.setAttribute("aria-expanded", String(open));
       }
 
@@ -1243,6 +2268,44 @@
       window.matchMedia("(min-width: 768px)").addEventListener("change", function (e) {
         if (e.matches) setMenu(false);
       });
+
+      // Header background, reading progress and back-to-top, at most once per frame
+      var scrollQueued = false;
+
+      function onScroll() {
+        scrollQueued = false;
+        var y = window.scrollY;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        header.classList.toggle("is-scrolled", y > 8);
+        header.style.setProperty("--progress", max > 0 ? Math.min(y / max, 1).toFixed(4) : "0");
+        backToTop.classList.toggle("is-visible", y > 400);
+      }
+
+      window.addEventListener("scroll", function () {
+        if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(onScroll); }
+      }, { passive: true });
+      onScroll();
+
+      backToTop.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+      });
+
+      // Mark the nav link for the section currently in view
+      var navLinks = navMenu.querySelectorAll('a[href^="#"]:not(.btn)');
+
+      if ("IntersectionObserver" in window) {
+        var spy = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach(function (link) {
+              if (link.getAttribute("href") === "#" + entry.target.id) link.setAttribute("aria-current", "location");
+              else link.removeAttribute("aria-current");
+            });
+          });
+        }, { rootMargin: "-45% 0px -50% 0px" });
+
+        document.querySelectorAll("main section[id]").forEach(function (section) { spy.observe(section); });
+      }
 
       /* ==========================================================
          2. FADE-IN ON SCROLL (IntersectionObserver)
@@ -1303,159 +2366,406 @@
       }
 
       /* ==========================================================
-         4. TESTIMONIAL CAROUSEL
+         4. SLIDERS (services rail + reviews carousel)
          ========================================================== */
-      var carousel = document.getElementById("carousel");
-      var track = document.getElementById("carousel-track");
-      var slides = Array.prototype.slice.call(track.children);
-      var dotsWrap = document.getElementById("carousel-dots");
-      var prevBtn = document.getElementById("carousel-prev");
-      var nextBtn = document.getElementById("carousel-next");
-      var desktopMq = window.matchMedia("(min-width: 1024px)");
+      // options: loop (arrows wrap around), autoplay (ms between moves, 0 = off)
+      function initSlider(root, options) {
+        var track = root.querySelector(".slider-track");
+        var slides = Array.prototype.slice.call(track.children);
+        var prevBtn = root.querySelector("[data-slider-prev]");
+        var nextBtn = root.querySelector("[data-slider-next]");
+        var toggleBtn = root.querySelector("[data-slider-toggle]");
+        var dotsWrap = root.querySelector(".slider-dots");
+        var progressBar = root.querySelector(".slider-progress-bar");
+        var countEl = root.querySelector(".slider-count");
 
-      var AUTO_DELAY = 5000;
-      var current = 0;
-      var timer = null;
-      var paused = false;
+        var current = 0;
+        var timer = null;
+        var hoverPaused = false;
+        var userPaused = false;
+        var inView = false;
+        var syncQueued = false;
+        var settling = false;
+        var settleTimer = null;
+        var drag = null;
+        var suppressClick = false;
 
-      // 1 card on mobile/tablet, 3 on desktop (mirrors --per-view in CSS)
-      function perView() { return desktopMq.matches ? 3 : 1; }
-      function maxIndex() { return Math.max(0, slides.length - perView()); }
-
-      function buildDots() {
-        dotsWrap.innerHTML = "";
-        for (var i = 0; i <= maxIndex(); i++) {
-          var dot = document.createElement("button");
-          dot.type = "button";
-          dot.className = "carousel-dot";
-          dot.setAttribute("aria-label", "Go to testimonial " + (i + 1));
-          dot.dataset.index = i;
-          dotsWrap.appendChild(dot);
+        // Cards visible at once: --per-view in CSS is the single source of truth
+        function perView() {
+          return Math.max(1, Math.floor(parseFloat(getComputedStyle(root).getPropertyValue("--per-view")) || 1));
         }
-      }
 
-      function goTo(index) {
-        var max = maxIndex();
-        // Wrap around at both ends
-        if (index > max) index = 0;
-        if (index < 0) index = max;
-        current = index;
+        function maxIndex() { return Math.max(0, slides.length - perView()); }
+        function maxScroll() { return track.scrollWidth - track.clientWidth; }
+        function slideLeft(i) { return Math.min(slides[i].offsetLeft - slides[0].offsetLeft, maxScroll()); }
 
-        track.style.transform = "translateX(" + (-current * 100 / perView()) + "%)";
+        function nearestIndex() {
+          var left = track.scrollLeft;
+          var max = maxIndex();
+          if (left >= maxScroll() - 2) return max;
+          var best = 0;
+          for (var i = 1; i <= max; i++) {
+            if (Math.abs(slideLeft(i) - left) < Math.abs(slideLeft(best) - left)) best = i;
+          }
+          return best;
+        }
 
-        // Hide off-screen slides from assistive tech
-        slides.forEach(function (slide, i) {
-          var visible = i >= current && i < current + perView();
-          slide.setAttribute("aria-hidden", String(!visible));
+        function buildDots() {
+          if (!dotsWrap || dotsWrap.children.length === maxIndex() + 1) return;
+          dotsWrap.replaceChildren();
+          for (var i = 0; i <= maxIndex(); i++) {
+            var dot = document.createElement("button");
+            dot.type = "button";
+            dot.className = "slider-dot";
+            dot.setAttribute("aria-label", "Go to position " + (i + 1));
+            dot.dataset.index = i;
+            dotsWrap.appendChild(dot);
+          }
+        }
+
+        // Reflect the scroll position in dots, arrows, progress and slide visibility
+        function sync() {
+          syncQueued = false;
+          // While a goTo() scroll is settling, the target index is already known
+          if (!settling) current = nearestIndex();
+          var per = perView();
+          var max = maxIndex();
+
+          // Hide off-screen slides from assistive tech (also drives the dimmed styling)
+          slides.forEach(function (slide, i) {
+            slide.setAttribute("aria-hidden", String(!(i >= current && i < current + per)));
+          });
+
+          if (dotsWrap) {
+            Array.prototype.forEach.call(dotsWrap.children, function (dot, i) {
+              if (i === current) dot.setAttribute("aria-current", "true");
+              else dot.removeAttribute("aria-current");
+            });
+          }
+
+          if (!options.loop) {
+            prevBtn.disabled = current === 0;
+            nextBtn.disabled = current === max;
+          }
+
+          if (progressBar) {
+            var shown = track.scrollWidth > 0 ? (track.scrollLeft + track.clientWidth) / track.scrollWidth : 1;
+            progressBar.style.setProperty("--p", Math.min(shown, 1).toFixed(4));
+          }
+
+          if (countEl) {
+            countEl.textContent = String(Math.min(current + per, slides.length)).padStart(2, "0") +
+              " / " + String(slides.length).padStart(2, "0");
+          }
+        }
+
+        function goTo(index, instant) {
+          var max = maxIndex();
+          if (options.loop) {
+            // Wrap around at both ends
+            if (index > max) index = 0;
+            if (index < 0) index = max;
+          } else {
+            index = Math.max(0, Math.min(index, max));
+          }
+          // Commit to the target now, so quick repeated presses each move one card
+          current = index;
+          settling = true;
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(release, 700);
+          track.scrollTo({ left: slideLeft(index), behavior: instant || reduceMotion ? "auto" : "smooth" });
+          sync();
+        }
+
+        // Hand control back to the scroll position (the user is scrolling, or the move has finished)
+        function release() {
+          clearTimeout(settleTimer);
+          if (!settling) return;
+          settling = false;
+          sync();
+        }
+
+        track.addEventListener("touchstart", release, { passive: true });
+        track.addEventListener("wheel", release, { passive: true });
+
+        track.addEventListener("scroll", function () {
+          if (!syncQueued) { syncQueued = true; requestAnimationFrame(sync); }
+        }, { passive: true });
+
+        // Auto-play: only while on screen, not hovered, focused or paused by the user
+        function stopAuto() {
+          clearInterval(timer);
+          timer = null;
+          if (options.autoplay) track.setAttribute("aria-live", "polite");
+        }
+
+        function startAuto() {
+          stopAuto();
+          if (!options.autoplay || reduceMotion || hoverPaused || userPaused || !inView || document.hidden) return;
+          track.setAttribute("aria-live", "off");
+          timer = setInterval(function () { goTo(current + 1); }, options.autoplay);
+        }
+
+        // Arrows and dots (restart the timer so a manual move gets a full interval)
+        prevBtn.addEventListener("click", function () { goTo(current - 1); startAuto(); });
+        nextBtn.addEventListener("click", function () { goTo(current + 1); startAuto(); });
+
+        if (dotsWrap) {
+          dotsWrap.addEventListener("click", function (e) {
+            var dot = e.target.closest(".slider-dot");
+            if (!dot) return;
+            goTo(Number(dot.dataset.index));
+            startAuto();
+          });
+        }
+
+        // Keyboard: arrow keys move one card, Home/End jump to the ends
+        track.addEventListener("keydown", function (e) {
+          var target = null;
+          if (e.key === "ArrowLeft") target = current - 1;
+          else if (e.key === "ArrowRight") target = current + 1;
+          else if (e.key === "Home") target = 0;
+          else if (e.key === "End") target = maxIndex();
+          if (target === null) return;
+          e.preventDefault();
+          goTo(target);
         });
 
-        Array.prototype.forEach.call(dotsWrap.children, function (dot, i) {
-          if (i === current) dot.setAttribute("aria-current", "true");
-          else dot.removeAttribute("aria-current");
+        // Mouse drag (touch and trackpad already scroll the track natively)
+        track.addEventListener("pointerdown", function (e) {
+          if (e.pointerType !== "mouse" || e.button !== 0) return;
+          release();
+          drag = { x: e.clientX, left: track.scrollLeft, moved: false };
         });
-      }
 
-      function stopAuto() {
-        clearInterval(timer);
-        timer = null;
-        track.setAttribute("aria-live", "polite");
-      }
+        window.addEventListener("pointermove", function (e) {
+          if (!drag) return;
+          var dx = e.clientX - drag.x;
+          if (!drag.moved) {
+            if (Math.abs(dx) < 6) return;
+            drag.moved = true;
+            track.classList.add("is-dragging", "no-snap");
+          }
+          track.scrollLeft = drag.left - dx;
+        });
 
-      function startAuto() {
-        stopAuto();
-        if (paused || reduceMotion) return;
-        track.setAttribute("aria-live", "off");
-        timer = setInterval(function () { goTo(current + 1); }, AUTO_DELAY);
-      }
+        function endDrag(e) {
+          if (!drag) return;
+          var moved = drag.moved;
+          var dx = e.clientX - drag.x;
+          var startLeft = drag.left;
+          drag = null;
+          if (!moved) return;
 
-      // Arrows and dots (restart the timer so a manual move gets a full 5s)
-      prevBtn.addEventListener("click", function () { goTo(current - 1); startAuto(); });
-      nextBtn.addEventListener("click", function () { goTo(current + 1); startAuto(); });
+          suppressClick = true;
+          setTimeout(function () { suppressClick = false; }, 0);
+          track.classList.remove("is-dragging");
 
-      dotsWrap.addEventListener("click", function (e) {
-        var dot = e.target.closest(".carousel-dot");
-        if (!dot) return;
-        goTo(Number(dot.dataset.index));
-        startAuto();
-      });
-
-      // Pause on hover and on keyboard focus
-      carousel.addEventListener("mouseenter", function () { paused = true; stopAuto(); });
-      carousel.addEventListener("mouseleave", function () { paused = false; startAuto(); });
-      carousel.addEventListener("focusin", function () { paused = true; stopAuto(); });
-      carousel.addEventListener("focusout", function (e) {
-        if (!carousel.contains(e.relatedTarget)) { paused = false; startAuto(); }
-      });
-
-      // Keyboard: left/right arrow keys
-      carousel.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowLeft") { goTo(current - 1); }
-        else if (e.key === "ArrowRight") { goTo(current + 1); }
-      });
-
-      // Touch swipe (50px horizontal threshold)
-      var touchStartX = 0;
-      var touchStartY = 0;
-
-      track.addEventListener("touchstart", function (e) {
-        touchStartX = e.changedTouches[0].clientX;
-        touchStartY = e.changedTouches[0].clientY;
-        stopAuto();
-      }, { passive: true });
-
-      track.addEventListener("touchend", function (e) {
-        var dx = e.changedTouches[0].clientX - touchStartX;
-        var dy = e.changedTouches[0].clientY - touchStartY;
-        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-          goTo(dx < 0 ? current + 1 : current - 1);
+          // A short flick still advances one card; then settle before snapping is re-enabled
+          var target = nearestIndex();
+          if (Math.abs(slideLeft(target) - startLeft) < 2 && Math.abs(dx) > 40) target += dx < 0 ? 1 : -1;
+          goTo(Math.max(0, Math.min(target, maxIndex())));
+          setTimeout(function () { track.classList.remove("no-snap"); }, reduceMotion ? 0 : 500);
         }
+
+        window.addEventListener("pointerup", endDrag);
+        window.addEventListener("pointercancel", endDrag);
+
+        // A drag must not trigger the link it started on, or start a native link drag
+        track.addEventListener("click", function (e) {
+          if (suppressClick) { e.preventDefault(); e.stopPropagation(); }
+        }, true);
+        track.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
+        if (options.autoplay) {
+          // Pause on hover, on keyboard focus and while a finger is on the track
+          root.addEventListener("mouseenter", function () { hoverPaused = true; stopAuto(); });
+          root.addEventListener("mouseleave", function () { hoverPaused = false; startAuto(); });
+          root.addEventListener("focusin", function () { hoverPaused = true; stopAuto(); });
+          root.addEventListener("focusout", function (e) {
+            if (!root.contains(e.relatedTarget)) { hoverPaused = false; startAuto(); }
+          });
+          track.addEventListener("touchstart", stopAuto, { passive: true });
+          track.addEventListener("touchend", startAuto, { passive: true });
+
+          // Don't advance while the tab is hidden
+          document.addEventListener("visibilitychange", startAuto);
+
+          if ("IntersectionObserver" in window) {
+            new IntersectionObserver(function (entries) {
+              inView = entries[0].isIntersecting;
+              startAuto();
+            }, { threshold: 0.3 }).observe(root);
+          } else {
+            inView = true;
+          }
+        }
+
+        if (toggleBtn) {
+          if (reduceMotion || !options.autoplay) {
+            toggleBtn.hidden = true;
+          } else {
+            toggleBtn.addEventListener("click", function () {
+              userPaused = !userPaused;
+              toggleBtn.setAttribute("aria-pressed", String(userPaused));
+              toggleBtn.setAttribute("aria-label", userPaused ? "Resume automatic scrolling" : "Pause automatic scrolling");
+              startAuto();
+            });
+          }
+        }
+
+        // Rebuild when the track resizes (cards per view changes at the breakpoints)
+        function refresh() {
+          buildDots();
+          goTo(Math.min(current, maxIndex()), true);
+          sync();
+        }
+
+        if ("ResizeObserver" in window) new ResizeObserver(refresh).observe(track);
+        else window.addEventListener("resize", refresh);
+
+        refresh();
         startAuto();
-      }, { passive: true });
+      }
 
-      // Rebuild when crossing the desktop breakpoint (cards per view changes)
-      desktopMq.addEventListener("change", function () {
-        buildDots();
-        goTo(Math.min(current, maxIndex()));
-      });
-
-      // Don't advance while the tab is hidden
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) stopAuto(); else startAuto();
-      });
-
-      buildDots();
-      goTo(0);
-      startAuto();
+      initSlider(document.getElementById("services-slider"), { loop: false, autoplay: 0 });
+      initSlider(document.getElementById("reviews-slider"), { loop: true, autoplay: 5500 });
 
       /* ==========================================================
-         5. ENQUIRY FORM: VALIDATION + SUBMIT
+         5. RETIREMENT CALCULATOR
+         ========================================================== */
+      var calcForm = document.getElementById("calc-form");
+      var calc = {
+        age: document.getElementById("calc-age"),
+        retire: document.getElementById("calc-retire"),
+        savings: document.getElementById("calc-savings"),
+        monthly: document.getElementById("calc-monthly"),
+        rate: document.getElementById("calc-rate")
+      };
+      var CHART_W = 320;
+      var CHART_H = 140;
+
+      function money(value) { return "$" + Math.round(value).toLocaleString("en-US"); }
+
+      var calcFormat = {
+        age: function (v) { return String(v); },
+        retire: function (v) { return String(v); },
+        savings: money,
+        monthly: money,
+        rate: function (v) { return v + "%"; }
+      };
+
+      function chartPath(values, peak) {
+        var last = values.length - 1;
+        return values.map(function (v, i) {
+          var x = (i / last) * CHART_W;
+          var y = CHART_H - (peak > 0 ? (v / peak) * CHART_H * 0.94 : 0);
+          return (i === 0 ? "M" : "L") + x.toFixed(1) + "," + y.toFixed(1);
+        }).join(" ");
+      }
+
+      // announce: also update the screen-reader status (on release, not on every pixel of a drag)
+      function updateCalc(announce) {
+        var age = Number(calc.age.value);
+
+        // Retirement must come after today
+        if (Number(calc.retire.value) <= age) calc.retire.value = age + 1;
+
+        var retire = Number(calc.retire.value);
+        var savings = Number(calc.savings.value);
+        var monthly = Number(calc.monthly.value);
+        var monthlyRate = Number(calc.rate.value) / 100 / 12;
+        var years = retire - age;
+
+        // Month-by-month compounding, sampled once a year for the chart
+        var balance = savings;
+        var balances = [balance];
+        var paidIn = [savings];
+        for (var y = 1; y <= years; y++) {
+          for (var m = 0; m < 12; m++) balance = balance * (1 + monthlyRate) + monthly;
+          balances.push(balance);
+          paidIn.push(savings + monthly * 12 * y);
+        }
+
+        var total = Math.round(balance / 1000) * 1000;
+        var contributed = savings + monthly * 12 * years;
+        var growth = Math.max(0, total - contributed);
+
+        Object.keys(calc).forEach(function (key) {
+          var input = calc[key];
+          var text = calcFormat[key](Number(input.value));
+          var fill = (input.value - input.min) / (input.max - input.min) * 100;
+          document.getElementById(input.id + "-out").textContent = text;
+          input.setAttribute("aria-valuetext", text);
+          input.style.setProperty("--fill", fill.toFixed(2) + "%");
+        });
+
+        document.getElementById("calc-at-age").textContent = retire;
+        document.getElementById("calc-total").textContent = money(total);
+        document.getElementById("calc-contributed").textContent = money(contributed);
+        document.getElementById("calc-growth").textContent = money(growth);
+        document.getElementById("calc-split-in").style.flexGrow = contributed;
+        document.getElementById("calc-split-growth").style.flexGrow = growth;
+
+        var line = chartPath(balances, balance);
+        document.getElementById("calc-chart-line").setAttribute("d", line);
+        document.getElementById("calc-chart-area").setAttribute("d", line + " L" + CHART_W + "," + CHART_H + " L0," + CHART_H + " Z");
+        document.getElementById("calc-chart-base").setAttribute("d", chartPath(paidIn, balance));
+
+        if (announce) {
+          document.getElementById("calc-status").textContent =
+            "Projected balance at " + retire + ": " + money(total) + ". You put in " + money(contributed) +
+            ", estimated growth " + money(growth) + ".";
+        }
+      }
+
+      calcForm.addEventListener("input", function () { updateCalc(false); });
+      calcForm.addEventListener("change", function () { updateCalc(true); });
+      calcForm.addEventListener("submit", function (e) { e.preventDefault(); });
+      updateCalc(false);
+
+      /* ==========================================================
+         6. ENQUIRY FORM: VALIDATION + SUBMIT
          ========================================================== */
       var form = document.getElementById("enquiry-form");
       var formCard = document.getElementById("form-card");
       var submitBtn = document.getElementById("submit-btn");
       var radioGroup = document.getElementById("contactMethod-group");
       var consentLabel = document.getElementById("consent-label");
+      var messageCount = document.getElementById("message-count");
       var submitAttempted = false;
+      var submitting = false;
+
+      var NAME_RE = /^[\p{L}\p{M}][\p{L}\p{M}' .-]*$/u;
+      var CONTROL_CHARS_RE = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+
+      // Strip control characters, trim and cap the length of anything typed into a text field
+      function clean(value, maxLength) {
+        return value.replace(CONTROL_CHARS_RE, "").trim().slice(0, maxLength);
+      }
+
+      function phoneDigits() { return form.phone.value.replace(/[\s().-]/g, ""); }
 
       // Each validator returns an error message, or "" when valid
       var validators = {
         fullName: function () {
-          var v = form.fullName.value.trim();
+          var v = clean(form.fullName.value, 80);
           if (!v) return "Please enter your full name.";
           if (v.length < 2) return "Name must be at least 2 characters.";
+          if (!NAME_RE.test(v)) return "Name can only contain letters, spaces, hyphens and apostrophes.";
           return "";
         },
         email: function () {
-          var v = form.email.value.trim();
+          var v = clean(form.email.value, 254);
           if (!v) return "Please enter your email address.";
           if (!EMAIL_RE.test(v)) return "Please enter a valid email address.";
           return "";
         },
         phone: function () {
-          var v = form.phone.value.replace(/\s+/g, "");
+          var v = phoneDigits();
           if (!v) return "Please enter your phone number.";
-          if (!/^\d+$/.test(v)) return "Phone number must contain digits only.";
-          if (v.length < 8 || v.length > 15) return "Phone number must be 8 to 15 digits.";
+          if (!/^\+?\d+$/.test(v)) return "Phone number can only contain digits, spaces and a leading +.";
+          if (v.replace("+", "").length < 8 || v.replace("+", "").length > 15) return "Phone number must be 8 to 15 digits.";
           return "";
         },
         ageRange: function () {
@@ -1468,7 +2778,10 @@
           return form.contactMethod.value ? "" : "Please choose a preferred contact method.";
         },
         message: function () {
-          return form.message.value.trim() ? "" : "Please enter a message.";
+          var v = clean(form.message.value, 1000);
+          if (!v) return "Please enter a message.";
+          if (v.length < 10) return "Please tell us a little more (at least 10 characters).";
+          return "";
         },
         consent: function () {
           return form.consent.checked ? "" : "Please agree to be contacted before submitting.";
@@ -1516,15 +2829,23 @@
       form.addEventListener("input", handleFieldEvent);
       form.addEventListener("change", handleFieldEvent);
 
+      form.message.addEventListener("input", function () {
+        messageCount.textContent = form.message.value.length;
+      });
+
+      // "Ask about ..." links preselect the matching area of interest (only values already in the list)
+      document.addEventListener("click", function (e) {
+        var link = e.target.closest("[data-interest]");
+        if (!link || !form.isConnected) return;
+        var wanted = link.dataset.interest;
+        Array.prototype.forEach.call(form.interest.options, function (option) {
+          if (option.value === wanted) form.interest.value = wanted;
+        });
+        if (submitAttempted) validateField("interest");
+      });
+
       function showSuccess(name) {
-        var panel = document.createElement("div");
-        panel.className = "form-success";
-        panel.setAttribute("role", "status");
-        panel.setAttribute("tabindex", "-1");
-        panel.innerHTML =
-          '<span class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></span>' +
-          "<h3></h3>" +
-          "<p>Your enquiry has been received. One of our advisers will contact you within one business day.</p>";
+        var panel = document.getElementById("success-template").content.firstElementChild.cloneNode(true);
         // textContent keeps user input from being interpreted as HTML
         panel.querySelector("h3").textContent = "Thank you, " + name + "!";
 
@@ -1534,6 +2855,7 @@
 
       form.addEventListener("submit", function (e) {
         e.preventDefault(); // no page reload
+        if (submitting) return; // ignore double submits
         submitAttempted = true;
 
         var firstInvalid = null;
@@ -1546,30 +2868,35 @@
           return;
         }
 
+        // Honeypot filled in: almost certainly a bot, so drop it without feedback
+        if (form.company.value) return;
+
         var data = {
-          fullName: form.fullName.value.trim(),
-          email: form.email.value.trim(),
-          phone: form.phone.value.replace(/\s+/g, ""),
+          fullName: clean(form.fullName.value, 80),
+          email: clean(form.email.value, 254),
+          phone: phoneDigits(),
           ageRange: form.ageRange.value,
           areaOfInterest: form.interest.value,
           preferredContactMethod: form.contactMethod.value,
-          message: form.message.value.trim(),
+          message: clean(form.message.value, 1000),
           consent: form.consent.checked
         };
 
         // Loading state for 1.5s, then success message
+        submitting = true;
         submitBtn.disabled = true;
         submitBtn.classList.add("is-loading");
         submitBtn.querySelector(".btn-label").textContent = "Sending...";
 
+        // No backend yet: `data` is where a real request would be sent from. It is deliberately
+        // not logged, so personal details never end up in the browser console.
         setTimeout(function () {
-          console.log(JSON.stringify(data, null, 2));
           showSuccess(data.fullName);
         }, 1500);
       });
 
       /* ==========================================================
-         6. NEWSLETTER SIGNUP
+         7. NEWSLETTER SIGNUP
          ========================================================== */
       var newsletterForm = document.getElementById("newsletter-form");
       var newsletterEmail = document.getElementById("newsletter-email");
@@ -1585,7 +2912,7 @@
 
       newsletterForm.addEventListener("submit", function (e) {
         e.preventDefault();
-        var value = newsletterEmail.value.trim();
+        var value = clean(newsletterEmail.value, 254);
 
         if (!value) {
           setNewsletterState("Please enter your email address.", true);
@@ -1600,22 +2927,9 @@
       });
 
       /* ==========================================================
-         7. FOOTER YEAR + BACK TO TOP
+         8. FOOTER YEAR
          ========================================================== */
       document.getElementById("year").textContent = new Date().getFullYear();
-
-      var backToTop = document.getElementById("back-to-top");
-
-      function toggleBackToTop() {
-        backToTop.classList.toggle("is-visible", window.scrollY > 400);
-      }
-
-      window.addEventListener("scroll", toggleBackToTop, { passive: true });
-      toggleBackToTop();
-
-      backToTop.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-      });
     })();
   </script>
 </body>
